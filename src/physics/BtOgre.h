@@ -228,7 +228,6 @@ class DebugDrawer : public btIDebugDraw
 
     Ogre::ManualObject mLines;
 	int mDebugMode;
-    bool mBegan{false};
 public:
     DebugDrawer(Ogre::SceneNode* node, btDynamicsWorld* world)
         : mNode(node), mWorld(world), mLines(""), mDebugMode(DBG_DrawWireframe)
@@ -241,11 +240,8 @@ public:
     void update()
     {
 		mWorld->debugDrawWorld();
-		if (mBegan)
-        {
-            mLines.end();
-            mBegan = false;
-        }
+		if(!mLines.getSections().empty()) // begin was called
+			mLines.end();
 	}
 
 	void drawLine(const btVector3& from,const btVector3& to,const btVector3& color);

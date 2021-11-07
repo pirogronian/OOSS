@@ -941,7 +941,6 @@ DynamicsWorld::~DynamicsWorld()
 	//------------------------------------------------------------------------------------------------
 	void DebugDrawer::drawLine(const btVector3& from,const btVector3& to,const btVector3& color)
 	{
-        mBegan = true;
         if (mLines.getSections().empty())
         {
             const char* matName = "Ogre/Debug/LinesMat";
