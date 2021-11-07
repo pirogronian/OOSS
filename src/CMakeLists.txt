@@ -36,6 +36,8 @@ target_include_directories(OOSS SYSTEM PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_sources(OOSS PRIVATE
     Application.h
     Application.cpp
+    Simulation.h
+    Simulation.cpp
     physics/BtOgre.h
     physics/BtOgre.cpp
     physics/RigidBody.h

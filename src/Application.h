@@ -1,16 +1,14 @@
 
-#include <Ogre.h>
+// #include <Ogre.h>
 #include <OgreApplicationContext.h>
 
-#include <physics/DynamicsWorld.h>
+// #include <physics/DynamicsWorld.h>
+
+#include <Simulation.h>
 
 class Application :  public OgreBites::ApplicationContext, public OgreBites::InputListener
 {
-    Ogre::SceneManager *_sceneMgr{nullptr};
-    Ogre::Camera *_mainCam{nullptr};
-    DynamicsWorld _world;
-    BtOgre::DebugDrawer *_debugDrawer{nullptr};
-    bool _debugDraw{true};
+    Simulation *_sim;
 public:
     Application();
     void setup();
