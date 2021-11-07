@@ -29,27 +29,35 @@ public:
     void clearBtRigidBody();
     void setSceneNode(Ogre::SceneNode*);
     void clearSceneNode();
+    
+    RigidBody() = default;
+    RigidBody(Ogre::SceneNode *node, btRigidBody *body)
+    {
+        setSceneNode(node);
+        setBtRigidBody(body);
+    }
+    
     void applyTorqueLocal(const btVector3& rot)
-        {
-            if (!_bbody)  return;
-            _bbody->applyTorque(_bbody->getWorldTransform().getBasis() * rot);
-        }
-        void applyForceLocal(const btVector3& f, const btVector3& offset = btVector3(0, 0, 0))
-        {
-            if (!_bbody)  return;
-            auto &tr = _bbody->getWorldTransform().getBasis();
-            _bbody->applyForce(tr * f, tr * offset);
-        }
-        btVector3 getAppliedForce() const { return _bbody ? _bbody->getTotalForce() : btVector3(0, 0, 0); }
-        btCollisionWorld::ClosestRayResultCallback rayTestClosest(const btVector3& start,
-                            const btVector3& stop) const
-        {
-            auto tr = getTransform();
-            if (!_world)  return btCollisionWorld::ClosestRayResultCallback(start, stop);
-            return _world->rayTestClosest(tr * start, tr * stop);
-        }
-        btCollisionWorld::ClosestRayResultCallback rayTestClosest(const btVector3& stop) const
-        {
-            return rayTestClosest(btVector3(0, 0, 0), stop);
-        }
+    {
+        if (!_bbody)  return;
+        _bbody->applyTorque(_bbody->getWorldTransform().getBasis() * rot);
+    }
+    void applyForceLocal(const btVector3& f, const btVector3& offset = btVector3(0, 0, 0))
+    {
+        if (!_bbody)  return;
+        auto &tr = _bbody->getWorldTransform().getBasis();
+        _bbody->applyForce(tr * f, tr * offset);
+    }
+    btVector3 getAppliedForce() const { return _bbody ? _bbody->getTotalForce() : btVector3(0, 0, 0); }
+    btCollisionWorld::ClosestRayResultCallback rayTestClosest(const btVector3& start,
+                        const btVector3& stop) const
+    {
+        auto tr = getTransform();
+        if (!_world)  return btCollisionWorld::ClosestRayResultCallback(start, stop);
+        return _world->rayTestClosest(tr * start, tr * stop);
+    }
+    btCollisionWorld::ClosestRayResultCallback rayTestClosest(const btVector3& stop) const
+    {
+        return rayTestClosest(btVector3(0, 0, 0), stop);
+    }
 };

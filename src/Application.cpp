@@ -8,7 +8,7 @@
 
 using namespace std;
 
-Application::Application() : OgreBites::ApplicationContext("OgreD")
+Application::Application() : OgreBites::ApplicationContext("OOSS")
 {
 }
 
@@ -56,9 +56,9 @@ void Application::setup()
 
     auto shape2 = BtOgre::StaticMeshToShapeConverter(fishEnt).createConvex();
     btBody = new btRigidBody(1, nullptr, shape2);
-    body = new RigidBody();
-    body->setSceneNode(fishNode);
-    body->setBtRigidBody(btBody);
+    body = new RigidBody(fishNode, btBody);
+//     body->setSceneNode(fishNode);
+//     body->setBtRigidBody(btBody);
     _world.addRigidBody(body);
     
     
