@@ -36,6 +36,11 @@ public:
         setSceneNode(node);
         setBtRigidBody(body);
     }
+    RigidBody(Ogre::SceneNode *node, btScalar mass, btCollisionShape *shape)
+    {
+        setSceneNode(node);
+        setBtRigidBody(new btRigidBody(mass, nullptr, shape));
+    }
     
     void applyTorqueLocal(const btVector3& rot)
     {

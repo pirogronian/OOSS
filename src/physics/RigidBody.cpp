@@ -35,10 +35,7 @@ void RigidBody::setBtRigidBody(btRigidBody *body)
     syncInertia();
     syncTransform();
     if (_world)
-    {
         _world->getBtWorld().addRigidBody(_bbody);
-        _bbody->setUserIndex(getWorldIndex());
-    }
 }
 
 void RigidBody::clearBtRigidBody()

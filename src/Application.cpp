@@ -55,12 +55,10 @@ void Application::setup()
     _world.addRigidBody(body);
 
     auto shape2 = BtOgre::StaticMeshToShapeConverter(fishEnt).createConvex();
-    btBody = new btRigidBody(1, nullptr, shape2);
-    body = new RigidBody(fishNode, btBody);
+    body = new RigidBody(fishNode, 1, shape2);
 //     body->setSceneNode(fishNode);
 //     body->setBtRigidBody(btBody);
     _world.addRigidBody(body);
-    
     
     _debugDrawer = new BtOgre::DebugDrawer(_sceneMgr->getRootSceneNode(), &_world.getBtWorld());
 }
