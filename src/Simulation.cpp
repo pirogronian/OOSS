@@ -5,10 +5,10 @@
 
 #include <physics/RigidBody.h>
 
-Simulation::Simulation(Ogre::Root *root)
+Simulation::Simulation(Ogre::SceneManager *sceneMgr)
 {
-    _root = root;
-    _sceneMgr = _root->createSceneManager();
+//     _root = root;
+    _sceneMgr = sceneMgr;
     Ogre::RTShader::ShaderGenerator* shadergen = Ogre::RTShader::ShaderGenerator::getSingletonPtr();
     shadergen->addSceneManager(_sceneMgr);
     _debugDrawer = new BtOgre::DebugDrawer(_sceneMgr->getRootSceneNode(), &_world.getBtWorld());

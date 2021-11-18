@@ -9,6 +9,7 @@
 
 class Application :  public OgreBites::ApplicationContext, public OgreBites::InputListener
 {
+    Ogre::SceneManager *_sceneMgr;
     Simulation *_sim;
     OgreBites::InputListener *_imguiListener;
     OgreBites::InputListener *_cammanListener;

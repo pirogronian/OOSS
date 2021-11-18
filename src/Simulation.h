@@ -10,15 +10,15 @@
 
 class Simulation
 {
-    Ogre::Root *_root{nullptr};
-    Ogre::SceneManager *_sceneMgr;
+//     Ogre::Root *_root{nullptr};
+    Ogre::SceneManager *_sceneMgr{nullptr};
     Ogre::Camera *_mainCam{nullptr};
     OgreBites::CameraMan *_mainCamMan{nullptr};
     DynamicsWorld _world;
     BtOgre::DebugDrawer *_debugDrawer{nullptr};
     bool _debugDraw{true};
 public:
-    Simulation(Ogre::Root *);
+    Simulation(Ogre::SceneManager *);
     void update(double);
     bool getDebugDraw() const { return _debugDraw; }
     void setDebugDraw(bool d) { _debugDraw = d; }

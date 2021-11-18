@@ -17,11 +17,13 @@ void Application::setup()
     OgreBites::ApplicationContext::setup();
     addInputListener(this);
 
-    _sim = new Simulation(getRoot());
+    _sceneMgr = getRoot()->createSceneManager();
+    
+    _sim = new Simulation(_sceneMgr);
     getRenderWindow()->addViewport(_sim->getMainCamera());
 
     Ogre::ImguiManager::createSingleton();
-    Ogre::ImguiManager::getSingleton().init(_sim->getSceneManager());
+    Ogre::ImguiManager::getSingleton().init(_sceneMgr);
     _imguiListener = Ogre::ImguiManager::getSingletonPtr()->getInputListener();
 
     _cammanListener = _sim->getMainCameraMan();
