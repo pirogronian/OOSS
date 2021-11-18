@@ -31,9 +31,38 @@ target_include_directories(OOSS SYSTEM PUBLIC ${OGRE_INCLUDE_DIRS}/RTShaderSyste
 find_package(Bullet REQUIRED)
 target_include_directories(OOSS SYSTEM PUBLIC ${BULLET_INCLUDE_DIRS})
 
+target_include_directories(OOSS SYSTEM PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/imgui)
+
+target_include_directories(OOSS SYSTEM PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/ogre-imgui)
+
 target_include_directories(OOSS SYSTEM PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
+add_definitions(-DIMGUI_DISABLE_OBSOLETE_FUNCTIONS)
+add_definitions(-DHAVE_OGRE_BITES)
+
+set(IMGUI_SRCS
+        ${CMAKE_CURRENT_SOURCE_DIR}/imgui/imconfig.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/imgui/imgui.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/imgui/imgui.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/imgui/imgui_demo.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/imgui/imgui_draw.cpp
+        #${CMAKE_CURRENT_SOURCE_DIR}/imgui/imgui_internal.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/imgui/imgui_tables.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/imgui/imgui_widgets.cpp
+        #${CMAKE_CURRENT_SOURCE_DIR}/imgui/imstb_rectpack.cpp
+        #${CMAKE_CURRENT_SOURCE_DIR}/imgui/imstb_textedit.cpp
+        #${CMAKE_CURRENT_SOURCE_DIR}/imgui/imstb_truetype.cpp
+        #${CMAKE_CURRENT_SOURCE_DIR}/imgui/misc/
+)
+
+set(OGRE_IMGUI_SRCS
+    ${CMAKE_CURRENT_SOURCE_DIR}/ogre-imgui/ImguiManager.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/ogre-imgui/ImguiManager.cpp
+)
+
 target_sources(OOSS PRIVATE
+    ${IMGUI_SRCS}
+    ${OGRE_IMGUI_SRCS}
     Application.h
     Application.cpp
     Simulation.h
