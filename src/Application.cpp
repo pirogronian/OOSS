@@ -119,3 +119,36 @@ bool Application::keyReleased(const OgreBites::KeyboardEvent& evt)
 
     return true;
 }
+
+bool Application::touchMoved(const OgreBites::TouchFingerEvent& evt)
+{
+    if (_imguiListener->touchMoved(evt))
+        return true;
+
+    if (_cammanListener->touchMoved(evt))
+        return true;
+
+    return true;
+}
+
+bool Application::touchPressed(const OgreBites::TouchFingerEvent& evt)
+{
+    if (_imguiListener->touchPressed(evt))
+        return true;
+
+    if (_cammanListener->touchPressed(evt))
+        return true;
+
+    return true;
+}
+
+bool Application::touchReleased(const OgreBites::TouchFingerEvent& evt)
+{
+    if (_imguiListener->touchReleased(evt))
+        return true;
+
+    if (_cammanListener->touchReleased(evt))
+        return true;
+
+    return true;
+}

@@ -24,7 +24,7 @@ public:
     bool mousePressed (const OgreBites::MouseButtonEvent &evt);
     bool mouseReleased (const OgreBites::MouseButtonEvent &evt);
     bool mouseWheelRolled (const OgreBites::MouseWheelEvent &evt);
-//     bool touchMoved (const OgreBites::TouchFingerEvent &evt);
-//     bool touchPressed (const OgreBites::TouchFingerEvent &evt);
-//     bool touchReleased (const OgreBites::TouchFingerEvent &evt);
+    bool touchMoved (const OgreBites::TouchFingerEvent &evt);
+    bool touchPressed (const OgreBites::TouchFingerEvent &evt);
+    bool touchReleased (const OgreBites::TouchFingerEvent &evt);
 };
