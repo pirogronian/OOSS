@@ -308,7 +308,8 @@ void ImguiManager::renderQueueEnded(uint8 queueGroupId, const String& invocation
                 st->setTexture(mFontTex);
                 st->setTextureFiltering(Ogre::TFO_NONE);
             }
-            renderSys->setScissorTest(true, scLeft, scTop, scRight, scBottom);
+//             renderSys->setScissorTest(true, scLeft, scTop, scRight, scBottom);
+            renderSys->setScissorTest(true, Ogre::Rect(scLeft, scTop, scRight, scBottom));
 
             // Render!
             mRenderable.mRenderOp.indexData->indexStart = startIdx;
