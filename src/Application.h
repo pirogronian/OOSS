@@ -1,9 +1,6 @@
 
-// #include <Ogre.h>
 #include <OgreApplicationContext.h>
-
 #include <ImguiManager.h>
-// #include <physics/DynamicsWorld.h>
 
 #include <Simulation.h>
 

@@ -7,7 +7,6 @@
 
 Simulation::Simulation(Ogre::SceneManager *sceneMgr)
 {
-//     _root = root;
     _sceneMgr = sceneMgr;
     Ogre::RTShader::ShaderGenerator* shadergen = Ogre::RTShader::ShaderGenerator::getSingletonPtr();
     shadergen->addSceneManager(_sceneMgr);

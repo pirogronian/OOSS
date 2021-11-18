@@ -10,7 +10,6 @@
 
 class Simulation
 {
-//     Ogre::Root *_root{nullptr};
     Ogre::SceneManager *_sceneMgr{nullptr};
     Ogre::Camera *_mainCam{nullptr};
     OgreBites::CameraMan *_mainCamMan{nullptr};

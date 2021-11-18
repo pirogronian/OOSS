@@ -3,7 +3,6 @@
 #include <OgreCameraMan.h>
 #include "Application.h"
 
-// #include <physics/BtOgre.h>
 #include <physics/RigidBody.h>
 
 using namespace std;
@@ -18,7 +17,7 @@ void Application::setup()
     addInputListener(this);
 
     _sceneMgr = getRoot()->createSceneManager();
-    
+
     _sim = new Simulation(_sceneMgr);
     getRenderWindow()->addViewport(_sim->getMainCamera());
 
