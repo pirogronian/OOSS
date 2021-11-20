@@ -2,6 +2,7 @@
 #include "DynamicsWorld.h"
 
 #include "RigidBody.h"
+#include "GravityCenter.h"
 
 bool DynamicsWorld::addRigidBody(RigidBody *b)
 {
@@ -22,6 +23,23 @@ bool DynamicsWorld::removeRigidBody(RigidBody *b)
     if (b->getBtRigidBody())  _world.removeRigidBody(b->getBtRigidBody());
     _bodies.remove(b->getWorldIndex());
     b->setWorldIndex(std::numeric_limits<std::size_t>::max());
-    b->_world = nullptr;
+    return true;
+}
+
+bool DynamicsWorld::addGravityCenter(GravityCenter *gc)
+{
+    if (_gcenters.contains(gc->getWorldIndex()))  return false;
+    auto i = _gcenters.add(gc);
+    gc->_setWorldIndex(i);
+    gc->_setWorld(this);
+    return true;
+}
+
+bool DynamicsWorld::removeGravityCenter(GravityCenter *gc)
+{
+    if (!_gcenters.contains(gc->getWorldIndex()))  return false;
+    gc->_setWorld(nullptr);
+    _gcenters.remove(gc->getWorldIndex());
+    gc->_setWorldIndex(std::numeric_limits<std::size_t>::max());
     return true;
 }

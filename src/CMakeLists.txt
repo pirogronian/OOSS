@@ -71,6 +71,8 @@ target_sources(OOSS PRIVATE
     physics/BtOgre.cpp
     physics/RigidBody.h
     physics/RigidBody.cpp
+    physics/GravityCenter.h
+    physics/GravityCenter.cpp
     physics/DynamicsWorld.h
     physics/DynamicsWorld.cpp
     main.cpp

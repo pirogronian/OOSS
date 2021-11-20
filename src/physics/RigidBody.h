@@ -5,9 +5,12 @@
 
 #include <physics/DynamicsWorld.h>
 
+class GravityCenter;
+
 class RigidBody
 {
     friend DynamicsWorld;
+    friend GravityCenter;
 protected:
     Ogre::SceneNode *_sceneNode{nullptr};
     BtOgre::RigidBodyState *_rbmState{nullptr};
@@ -15,8 +18,10 @@ protected:
     DynamicsWorld *_world{nullptr};
     std::size_t _worldIndex{std::numeric_limits<std::size_t>::max()};
 
+    mutable GravityCenter *_gc{nullptr};
     void setWorld(DynamicsWorld *w) { _world = w; }
-    void setWorldIndex(std::size_t i) { _worldIndex - i; }
+    void setWorldIndex(std::size_t i) { _worldIndex = i; }
+    void setGravityCenter(GravityCenter *gc) { _gc = gc; }
 public:
     std::size_t getWorldIndex() const { return _worldIndex; }
     btRigidBody *getBtRigidBody() { return _bbody; }
@@ -29,7 +34,9 @@ public:
     void clearBtRigidBody();
     void setSceneNode(Ogre::SceneNode*);
     void clearSceneNode();
-    
+    GravityCenter *getGravityCenter() const { return _gc; }
+//     GravityCenter *getGravityCenter() { return _gc; }
+
     RigidBody() = default;
     RigidBody(Ogre::SceneNode *node, btRigidBody *body)
     {
