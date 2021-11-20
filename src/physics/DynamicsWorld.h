@@ -28,6 +28,15 @@ public:
     bool removeRigidBody(RigidBody*);
     bool addGravityCenter(GravityCenter*);
     bool removeGravityCenter(GravityCenter*);
+    
+    void setGlobalGravity(const btVector3& v) { _world.setGravity(v); }
+    btVector3 getGlobalGravity() const { return _world.getGravity(); }
+    void setMinStepDelta(btScalar d) { _minStepDelta = d; }
+    btScalar getMinStepDelta() const { return _minStepDelta; }
+    btScalar getMaxSubSteps() const { return _maxSubSteps; }
+    void setMaxSubSteps(btScalar m) { _maxSubSteps = m; }
+    void stepSimulation(btScalar d);
+    
     btCollisionWorld::ClosestRayResultCallback rayTestClosest(const btVector3& start, const btVector3& stop) const
     {
         btCollisionWorld::ClosestRayResultCallback callback(start, stop);

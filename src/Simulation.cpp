@@ -40,6 +40,8 @@ Simulation::Simulation(Ogre::SceneManager *sceneMgr)
     auto shape2 = BtOgre::StaticMeshToShapeConverter(fishEnt).createConvex();
     body = new RigidBody(fishNode, 1, shape2);
     _world.addRigidBody(body);
+
+    _world.setGlobalGravity(btVector3(1, -2, 1));
 }
 
 void Simulation::update(double t)

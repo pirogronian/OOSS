@@ -43,3 +43,8 @@ bool DynamicsWorld::removeGravityCenter(GravityCenter *gc)
     gc->_setWorldIndex(std::numeric_limits<std::size_t>::max());
     return true;
 }
+
+void DynamicsWorld::stepSimulation(btScalar d)
+{
+    _world.stepSimulation(d, _maxSubSteps, _minStepDelta);
+}
