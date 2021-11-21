@@ -14,6 +14,7 @@
         static constexpr std::size_t InvalidIndex = std::numeric_limits<std::size_t>::max();
     protected:
         std::vector<std::optional<VType>> m_vector;
+        std::size_t m_items{0};
         std::size_t m_firstFreeSlot{InvalidIndex};
         std::size_t m_freeSlots{0};
 
@@ -40,8 +41,10 @@
         std::size_t firstFreeSlot() const { return m_firstFreeSlot; }
         std::size_t freeSlots() const { return m_freeSlots; }
         std::size_t size() const { return m_vector.size(); }
+        std::size_t itemsNumber() const { return m_items; }
         bool unique() const { return m_unique; }
         void setUnique(bool u) { m_unique = u; }
+        std::size_t maxIndex() const { return m_freeSlots + m_items; }
         bool contains(std::size_t i) const
         {
             return i < m_vector.size() && m_vector[i].has_value();
@@ -61,11 +64,13 @@
                 auto i = m_firstFreeSlot;
                 m_vector[i] = v;
                 updateFirstFreeSlot();
+                ++m_items;
                 return i;
             }
             else
             {
                 m_vector.push_back(v);
+                ++m_items;
                 return m_vector.size() - 1;
             }
             assert(("Should not be there!", false));
@@ -86,6 +91,7 @@
                     if (m_firstFreeSlot == InvalidIndex || m_firstFreeSlot > i)
                         m_firstFreeSlot = i;
                 }
+                --m_items;
                 return true;
             }
             return false;
@@ -113,5 +119,6 @@
             m_vector.clear();
             m_firstFreeSlot = InvalidIndex;
             m_freeSlots = 0;
+            m_items = 0;
         }
     };

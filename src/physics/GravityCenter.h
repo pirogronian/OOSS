@@ -8,6 +8,7 @@
 
 class GravityCenter
 {
+    btScalar _factor{1};
     std::variant<btVector3, RigidBody*, Ogre::SceneNode*> _position{btVector3(0, 0, 0)};
     bool _autoClear{true};
 
@@ -24,6 +25,8 @@ class GravityCenter
     void _setOwner(RigidBody *);
     void _setOwner(Ogre::SceneNode *);
 public:
+    btScalar getFactor() const { return _factor; }
+    void setFactor(btScalar f) { _factor = f; }
     std::size_t getWorldIndex() const { return _worldIndex; }
     bool getAutoClear() const { return _autoClear; }
     void setAutoClear(bool ac) { _autoClear = ac; }
@@ -44,6 +47,7 @@ public:
     void setPosition(btVector3 v);
     void setOwner(RigidBody*);
     void setOwner(Ogre::SceneNode*);
+    void actOn(RigidBody*);
     GravityCenter() = default;
     GravityCenter(btVector3 v) : _position(v) {}
     GravityCenter(RigidBody *rb) { _setOwner(rb); }

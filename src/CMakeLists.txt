@@ -67,6 +67,8 @@ target_sources(OOSS PRIVATE
     Application.cpp
     Simulation.h
     Simulation.cpp
+    physics/physics.h
+    physics/physics.cpp
     physics/BtOgre.h
     physics/BtOgre.cpp
     physics/RigidBody.h

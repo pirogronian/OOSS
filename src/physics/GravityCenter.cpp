@@ -1,5 +1,6 @@
 
 #include <cassert>
+#include <iostream>
 
 #include "GravityCenter.h"
 
@@ -53,4 +54,18 @@ void GravityCenter::setOwner(RigidBody *rb) {
 void GravityCenter::setOwner(Ogre::SceneNode *sn) {
     _clearOwnership();
     _setOwner(sn);
+}
+
+void GravityCenter::actOn(RigidBody *rb)
+{
+    btVector3 rbPos = rb->getTransform().getOrigin();
+    btVector3 pos = getPosition();
+    btVector3 relPos = pos - rbPos;
+    btScalar dist2 = relPos.length2();
+    if (dist2 == 0)  return;
+    btVector3 dir = relPos.normalized();
+    btVector3 force = dir * _factor / dist2;
+//     std::cout << "Calculated force:" << force.length() << std::endl;
+    rb->applyForce(force);
+//     std::cout << "Applied force:   " << rb->getAppliedForce().length() << std::endl;
 }

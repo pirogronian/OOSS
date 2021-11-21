@@ -4,6 +4,7 @@
 #include "Simulation.h"
 
 #include <physics/RigidBody.h>
+#include <physics/GravityCenter.h>
 
 Simulation::Simulation(Ogre::SceneManager *sceneMgr)
 {
@@ -34,19 +35,27 @@ Simulation::Simulation(Ogre::SceneManager *sceneMgr)
     _mainCamMan->setYawPitchDist(Ogre::Degree(45), Ogre::Degree(45), 120);
 
     auto shape1 = BtOgre::StaticMeshToShapeConverter(ogreEnt).createTrimesh();
-    auto body = new RigidBody(ogrenode, 0, shape1);
-    _world.addRigidBody(body);
+    auto body1 = new RigidBody(ogrenode, 0, shape1);
+    _world.addRigidBody(body1);
 
     auto shape2 = BtOgre::StaticMeshToShapeConverter(fishEnt).createConvex();
-    body = new RigidBody(fishNode, 1, shape2);
-    _world.addRigidBody(body);
+    auto body2 = new RigidBody(fishNode, 1, shape2);
+    _world.addRigidBody(body2);
 
-    _world.setGlobalGravity(btVector3(1, -2, 1));
+    auto gc = new GravityCenter(body2);
+    gc->setFactor(1000);
+//     _world.addGravityCenter(gc);
+
+    _world.setGlobalGravity(btVector3(0, 0, 0));
+
+    body2->applyForce(btVector3(100, 0, 0));
+    body2->applyTorque(btVector3(100, 0, 0));
 }
 
-void Simulation::update(double t)
+void Simulation::update(double delta)
 {
-    _world.getBtWorld().stepSimulation(t, 10);
+    _world.stepSimulation(delta);
+    dump(_world);
 
     if(_debugDraw)
        	_debugDrawer->update();

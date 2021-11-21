@@ -1,8 +1,12 @@
 
+#include <iostream>
+
 #include "DynamicsWorld.h"
 
 #include "RigidBody.h"
 #include "GravityCenter.h"
+
+using namespace std;
 
 bool DynamicsWorld::addRigidBody(RigidBody *b)
 {
@@ -44,7 +48,43 @@ bool DynamicsWorld::removeGravityCenter(GravityCenter *gc)
     return true;
 }
 
+void DynamicsWorld::_update(RigidBody *rb, btScalar delta) {
+    for(std::size_t i = 0; i < _gcenters.size(); i++)
+    {
+        if (_gcenters.contains(i)) {
+            GravityCenter *gc = _gcenters.get(i);
+            gc->actOn(rb);
+        }
+    }
+}
+
+void DynamicsWorld::_updateRigidBodies(btScalar delta) {
+    for(std::size_t i = 0; i < _bodies.size(); i++)
+    {
+        if (_bodies.contains(i)) {
+            RigidBody *rb = _bodies.get(i);
+            _update(rb, delta);
+        }
+    }
+}
+
 void DynamicsWorld::stepSimulation(btScalar d)
 {
+    _updateRigidBodies(d);
     _world.stepSimulation(d, _maxSubSteps, _minStepDelta);
+}
+
+void dump(const DynamicsWorld *dw) {
+    cout << "          >>>=| Dump DynamicsWorld |=>>>\n";
+    size_t i = 0, c = 0, n = dw->rigidBodiesNumber();
+    cout << "RigidBodies number: " << n << endl;
+    while(c < n) {
+        const RigidBody *rb = dw->getRigidBody(i);
+//         cout << i << ", " << c << endl;
+        i++;
+        if (!rb)  continue;
+        c++;
+        dump(rb);
+    }
+    cout << "          <<<=| Dump DynamicsWorld |=<<<\n";
 }

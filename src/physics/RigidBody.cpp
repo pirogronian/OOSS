@@ -66,3 +66,7 @@ void RigidBody::clearSceneNode()
     }
     _sceneNode = nullptr;
 }
+
+void dump(const RigidBody *rb) {
+    dump(rb->getBtRigidBody());
+}

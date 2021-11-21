@@ -1,6 +1,8 @@
 
 #pragma once
 
+#include "physics.h"
+
 #include "physics/BtOgre.h"
 
 #include <physics/DynamicsWorld.h>
@@ -49,6 +51,15 @@ public:
         setBtRigidBody(new btRigidBody(mass, nullptr, shape));
     }
     
+    void applyForce(const btVector3 &f, const btVector3& offset = btVector3(0, 0, 0)) {
+        if (!_bbody)  return;
+        _bbody->applyForce(f, offset);
+    }
+    void applyTorque(const btVector3& rot)
+    {
+        if (!_bbody)  return;
+        _bbody->applyTorque(rot);
+    }
     void applyTorqueLocal(const btVector3& rot)
     {
         if (!_bbody)  return;
@@ -73,3 +84,6 @@ public:
         return rayTestClosest(btVector3(0, 0, 0), stop);
     }
 };
+
+void dump(const btRigidBody *);
+void dump(const RigidBody *);
