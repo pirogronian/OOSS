@@ -44,7 +44,7 @@ Simulation::Simulation(Ogre::SceneManager *sceneMgr)
 //    auto body2 = new RigidBody(fishNode, bbody2);
     _world.addRigidBody(body2);
 
-//     body2->getBtRigidBody()->setLinearVelocity(btVector3(-1, 0, 0));
+    body2->getBtRigidBody()->setLinearVelocity(btVector3(7, 0, 0));
 
     auto gc = new GravityCenter(body1);
     gc->setFactor(1000);
@@ -54,10 +54,11 @@ Simulation::Simulation(Ogre::SceneManager *sceneMgr)
 
 //     body2->getBtRigidBody()->applyCentralImpulse(btVector3(91, 0, 0));
 //     body2->getBtRigidBody()->applyTorqueImpulse(btVector3(92, 0, 0));
-//     body2->applyForce(btVector3(0, -7, 0));
+//     body2->getBtRigidBody()->applyCentralForce(btVector3(0, 1, 0));
 //     body2->getBtRigidBody()->integrateVelocities(0.1);
 //     dump(body2->getBtRigidBody());
-//     body2->applyTorque(btVector3(94, 0, 0));
+//     body2->applyTorque(btVector3(1, 0, 0));
+//     dump(body2);
 }
 
 void Simulation::update(double delta)
