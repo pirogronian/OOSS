@@ -1,6 +1,7 @@
 
 #include <cassert>
-#include <iostream>
+
+#include <utils/DumpHelper.h>
 
 #include "GravityCenter.h"
 
@@ -65,7 +66,10 @@ void GravityCenter::actOn(RigidBody *rb)
     if (dist2 == 0)  return;
     btVector3 dir = relPos.normalized();
     btVector3 force = dir * _factor / dist2;
-//     std::cout << "Calculated force:" << force.length() << std::endl;
     rb->applyForce(force);
+//     Dump.begin("GravityCenter::actOn()");
+//     Dump.putParam("Applied force", rb->getAppliedForce());
+//     dump(rb);
+//     Dump.end();
 //     std::cout << "Applied force:   " << rb->getAppliedForce().length() << std::endl;
 }

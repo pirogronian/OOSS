@@ -39,25 +39,31 @@ Simulation::Simulation(Ogre::SceneManager *sceneMgr)
     _world.addRigidBody(body1);
 
     auto shape2 = BtOgre::StaticMeshToShapeConverter(fishEnt).createConvex();
+//    auto bbody2 = new btRigidBody(1, nullptr, shape2);
     auto body2 = new RigidBody(fishNode, 1, shape2);
+//    auto body2 = new RigidBody(fishNode, bbody2);
     _world.addRigidBody(body2);
 
-    body2->getBtRigidBody()->setLinearVelocity(btVector3(-1, 0, 0));
-    
-    auto gc = new GravityCenter(body2);
+//     body2->getBtRigidBody()->setLinearVelocity(btVector3(-1, 0, 0));
+
+    auto gc = new GravityCenter(body1);
     gc->setFactor(1000);
     _world.addGravityCenter(gc);
 
     _world.setGlobalGravity(btVector3(0, 0, 0));
 
-    body2->applyForce(btVector3(100, 0, 0));
-    body2->applyTorque(btVector3(100, 0, 0));
+//     body2->getBtRigidBody()->applyCentralImpulse(btVector3(91, 0, 0));
+//     body2->getBtRigidBody()->applyTorqueImpulse(btVector3(92, 0, 0));
+//     body2->applyForce(btVector3(0, -7, 0));
+//     body2->getBtRigidBody()->integrateVelocities(0.1);
+//     dump(body2->getBtRigidBody());
+//     body2->applyTorque(btVector3(94, 0, 0));
 }
 
 void Simulation::update(double delta)
 {
+//     dump(_world);
     _world.stepSimulation(delta);
-    dump(_world);
 
     if(_debugDraw)
        	_debugDrawer->update();

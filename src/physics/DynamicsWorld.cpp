@@ -58,6 +58,7 @@ void DynamicsWorld::_update(RigidBody *rb, btScalar delta) {
             gc->actOn(rb);
         }
     }
+    rb->getBtRigidBody()->integrateVelocities(delta); // dirty hack, but nothing else works...
 }
 
 void DynamicsWorld::_updateRigidBodies(btScalar delta) {
@@ -74,6 +75,7 @@ void DynamicsWorld::stepSimulation(btScalar d)
 {
     _updateRigidBodies(d);
     _world.stepSimulation(d, _maxSubSteps, _minStepDelta);
+//     _world.stepSimulation(d, 0, 0);
 }
 
 void dump(const DynamicsWorld *dw) {

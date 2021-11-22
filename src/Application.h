@@ -10,6 +10,8 @@ class Application :  public OgreBites::ApplicationContext, public OgreBites::Inp
     Simulation *_sim;
     OgreBites::InputListener *_imguiListener;
     OgreBites::InputListener *_cammanListener;
+    int _frameCounter {0};
+    int _frameLimit{-1};
 public:
     Application();
     void setup();

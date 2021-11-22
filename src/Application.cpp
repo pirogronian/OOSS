@@ -26,6 +26,8 @@ void Application::setup()
     _imguiListener = Ogre::ImguiManager::getSingletonPtr()->getInputListener();
 
     _cammanListener = _sim->getMainCameraMan();
+    
+//     _frameLimit = 5;
 }
 
 void Application::shutdown()
@@ -44,6 +46,10 @@ bool Application::frameStarted(const Ogre::FrameEvent &evt)
     ImGui::ShowDemoWindow();
 
     _sim->update(evt.timeSinceLastFrame);
+
+    ++_frameCounter;
+    if (_frameLimit > 0 && _frameCounter > _frameLimit)
+        getRoot()->queueEndRendering();
 
     return true;
 }
