@@ -42,9 +42,11 @@ Simulation::Simulation(Ogre::SceneManager *sceneMgr)
     auto body2 = new RigidBody(fishNode, 1, shape2);
     _world.addRigidBody(body2);
 
+    body2->getBtRigidBody()->setLinearVelocity(btVector3(-1, 0, 0));
+    
     auto gc = new GravityCenter(body2);
     gc->setFactor(1000);
-//     _world.addGravityCenter(gc);
+    _world.addGravityCenter(gc);
 
     _world.setGlobalGravity(btVector3(0, 0, 0));
 
