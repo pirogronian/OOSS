@@ -1,13 +1,15 @@
 
 #include <iostream>
 
+#include <utils/DumpHelper.h>
+
 #include "physics.h"
 
 using namespace std;
 
 void dump(const btRigidBody *btrb) {
-    cout << "            >>>=| Dump btRigidBody |=>>>\n";
-    cout << "is in world: " << btrb->isInWorld() << endl;
-    cout << "Motion state: " << btrb->getMotionState() << endl;
-    cout << "            <<<=| Dump btRigidBody |=<<<\n";
+    Dump.begin("btRigidBody");
+    Dump.putParam("Is in world", btrb->isInWorld());
+    Dump.putParam("Motion state", btrb->getMotionState());
+    Dump.end();
 }

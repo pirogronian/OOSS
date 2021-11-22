@@ -77,6 +77,8 @@ target_sources(OOSS PRIVATE
     physics/GravityCenter.cpp
     physics/DynamicsWorld.h
     physics/DynamicsWorld.cpp
+    utils/DumpHelper.h
+    utils/DumpHelper.cpp
     main.cpp
 )
 

@@ -1,6 +1,8 @@
 
 #include <iostream>
 
+#include <utils/DumpHelper.h>
+
 #include "DynamicsWorld.h"
 
 #include "RigidBody.h"
@@ -75,9 +77,9 @@ void DynamicsWorld::stepSimulation(btScalar d)
 }
 
 void dump(const DynamicsWorld *dw) {
-    cout << "          >>>=| Dump DynamicsWorld |=>>>\n";
+    Dump.begin("DynamicsWorld");
     size_t i = 0, c = 0, n = dw->rigidBodiesNumber();
-    cout << "RigidBodies number: " << n << endl;
+    Dump.putParam("RigidBodies number:", n);
     while(c < n) {
         const RigidBody *rb = dw->getRigidBody(i);
 //         cout << i << ", " << c << endl;
@@ -86,5 +88,5 @@ void dump(const DynamicsWorld *dw) {
         c++;
         dump(rb);
     }
-    cout << "          <<<=| Dump DynamicsWorld |=<<<\n";
+    Dump.end();
 }
