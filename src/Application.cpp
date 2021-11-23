@@ -44,7 +44,8 @@ bool Application::frameStarted(const Ogre::FrameEvent &evt)
             evt.timeSinceLastFrame,
             Ogre::Rect(0, 0, getRenderWindow()->getWidth(), getRenderWindow()->getHeight()));
 
-    ImGui::ShowDemoWindow();
+    if (_visibleUI.mainMenu)  updateMainMenu();
+    if (_visibleUI.demoWindow)  ImGui::ShowDemoWindow();
 
     _sim->update(evt.timeSinceLastFrame);
 
@@ -103,10 +104,8 @@ bool Application::keyPressed(const OgreBites::KeyboardEvent& evt)
 {
     cout << "Key pressed:" << evt.keysym.sym << ", " << evt.keysym.mod << endl;
 
-    if (evt.keysym.sym == OgreBites::SDLK_ESCAPE)
-    {
-        getRoot()->queueEndRendering();
-    }
+    if (evt.keysym.sym == OgreBites::SDLK_ESCAPE)  getRoot()->queueEndRendering();
+    if (evt.keysym.sym == OgreBites::SDLK_F1)  _visibleUI.mainMenu = !_visibleUI.mainMenu;
 
     if (_imguiListener->keyReleased(evt))
         return true;
@@ -159,4 +158,17 @@ bool Application::touchReleased(const OgreBites::TouchFingerEvent& evt)
         return true;
 
     return true;
+}
+
+void Application::updateMainMenu()
+{
+    bool quit {false};
+    if (ImGui::BeginMainMenuBar()) {
+        if (ImGui::BeginMenu("Program")) {
+            ImGui::MenuItem("Quit", "Esc", &quit);
+            ImGui::EndMenu();
+        }
+        ImGui::EndMainMenuBar();
+    }
+    if (quit) getRoot()->queueEndRendering();
 }

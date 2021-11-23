@@ -12,6 +12,11 @@ class Application :  public OgreBites::ApplicationContext, public OgreBites::Inp
     OgreBites::InputListener *_cammanListener;
     int _frameCounter {0};
     int _frameLimit{-1};
+    struct VisibleUI {
+        bool demoWindow {false};
+        bool mainMenu {false};
+    };
+    VisibleUI _visibleUI;
 public:
     Application();
     void setup();
@@ -27,4 +32,6 @@ public:
     bool touchMoved (const OgreBites::TouchFingerEvent &evt);
     bool touchPressed (const OgreBites::TouchFingerEvent &evt);
     bool touchReleased (const OgreBites::TouchFingerEvent &evt);
+
+    void updateMainMenu();
 };
