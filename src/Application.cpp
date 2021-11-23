@@ -28,6 +28,7 @@ void Application::setup()
     _cammanListener = _sim->getMainCameraMan();
     
 //     _frameLimit = 5;
+    _sim->populate();
 }
 
 void Application::shutdown()

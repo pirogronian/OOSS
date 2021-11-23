@@ -19,6 +19,21 @@ Simulation::Simulation(Ogre::SceneManager *sceneMgr)
     auto *camnode = _sceneMgr->getRootSceneNode()->createChildSceneNode();
     camnode->attachObject(_mainCam);
 
+    _mainCamMan = new OgreBites::CameraMan(camnode);
+    _mainCamMan->setStyle(OgreBites::CS_ORBIT);
+}
+
+void Simulation::update(double delta)
+{
+//     dump(_world);
+    _world.stepSimulation(delta);
+
+    if(_debugDraw)
+       	_debugDrawer->update();
+}
+
+void Simulation::populate()
+{
     auto *ogreEnt = _sceneMgr->createEntity("ogrehead.mesh");
     auto *ogrenode = _sceneMgr->getRootSceneNode()->createChildSceneNode();
     ogrenode->attachObject(ogreEnt);
@@ -29,11 +44,7 @@ Simulation::Simulation(Ogre::SceneManager *sceneMgr)
     fishNode->setPosition(0, 50, 0);
 
     _sceneMgr->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
-
-    _mainCamMan = new OgreBites::CameraMan(camnode);
-    _mainCamMan->setStyle(OgreBites::CS_ORBIT);
-    _mainCamMan->setYawPitchDist(Ogre::Degree(45), Ogre::Degree(45), 120);
-
+    
     auto shape1 = BtOgre::StaticMeshToShapeConverter(ogreEnt).createTrimesh();
     auto body1 = new RigidBody(ogrenode, 0, shape1);
     _world.addRigidBody(body1);
@@ -59,13 +70,10 @@ Simulation::Simulation(Ogre::SceneManager *sceneMgr)
 //     dump(body2->getBtRigidBody());
 //     body2->applyTorque(btVector3(1, 0, 0));
 //     dump(body2);
+    _mainCamMan->setYawPitchDist(Ogre::Degree(45), Ogre::Degree(45), 120);
 }
 
-void Simulation::update(double delta)
+void Simulation::clear()
 {
-//     dump(_world);
-    _world.stepSimulation(delta);
-
-    if(_debugDraw)
-       	_debugDrawer->update();
+    
 }

@@ -27,4 +27,7 @@ public:
     const Ogre::Camera *getMainCamera() const { return _mainCam; }
     OgreBites::CameraMan *getMainCameraMan() { return _mainCamMan; }
     const OgreBites::CameraMan *getMainCameraMan() const { return _mainCamMan; }
+
+    void populate();
+    void clear();
 };
