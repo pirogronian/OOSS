@@ -34,6 +34,8 @@ public:
     const btRigidBody *getBtRigidBody() const { return _bbody; }
     void setBtRigidBody(btRigidBody*);
     void clearBtRigidBody();
+    Ogre::SceneNode *getSceneNode() { return _sceneNode; }
+    const Ogre::SceneNode *getSceneNode() const { return _sceneNode; }
     void setSceneNode(Ogre::SceneNode*);
     void clearSceneNode();
     GravityCenter *getGravityCenter() const { return _gc; }

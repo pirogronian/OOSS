@@ -30,4 +30,5 @@ public:
 
     void populate();
     void clear();
+    void clearRigidBodies(bool);
 };

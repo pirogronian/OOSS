@@ -228,6 +228,7 @@ class DebugDrawer : public btIDebugDraw
 
     Ogre::ManualObject mLines;
 	int mDebugMode;
+    bool mBegin{false};
 public:
     DebugDrawer(Ogre::SceneNode* node, btDynamicsWorld* world)
         : mNode(node), mWorld(world), mLines(""), mDebugMode(DBG_DrawWireframe)
@@ -239,8 +240,10 @@ public:
 
     void update()
     {
+        mBegin = false;
 		mWorld->debugDrawWorld();
-		if(!mLines.getSections().empty()) // begin was called
+// 		if(!mLines.getSections().empty()) // begin was called // but desnt work for me
+        if (mBegin)
 			mLines.end();
 	}
 

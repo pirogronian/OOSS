@@ -28,7 +28,7 @@ void Application::setup()
     _cammanListener = _sim->getMainCameraMan();
     
 //     _frameLimit = 5;
-    _sim->populate();
+//     _sim->populate();
 }
 
 void Application::shutdown()
@@ -163,12 +163,18 @@ bool Application::touchReleased(const OgreBites::TouchFingerEvent& evt)
 void Application::updateMainMenu()
 {
     bool quit {false};
+    bool newsim {false};
+    bool clrsim {false};
     if (ImGui::BeginMainMenuBar()) {
         if (ImGui::BeginMenu("Program")) {
+            ImGui::MenuItem("Populate simulation", "", &newsim);
+            ImGui::MenuItem("Clear simulation", "", &clrsim);
             ImGui::MenuItem("Quit", "Esc", &quit);
             ImGui::EndMenu();
         }
         ImGui::EndMainMenuBar();
     }
+    if (newsim) _sim->populate();
+    if (clrsim) _sim->clear();
     if (quit) getRoot()->queueEndRendering();
 }

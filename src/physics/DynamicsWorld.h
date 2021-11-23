@@ -34,6 +34,7 @@ public:
     RigidBody *getRigidBody(size_t i) { return _bodies.get(i, nullptr); }
     const RigidBody *getRigidBody(size_t i) const { return _bodies.get(i, nullptr); }
     size_t rigidBodiesNumber() const { return _bodies.itemsNumber(); }
+    size_t getMaxRigidBodyIndex() const { return _bodies.maxIndex(); }
 
     bool addGravityCenter(GravityCenter*);
     bool removeGravityCenter(GravityCenter*);

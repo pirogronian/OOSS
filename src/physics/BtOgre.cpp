@@ -954,9 +954,13 @@ DynamicsWorld::~DynamicsWorld()
             }
             mLines.setBufferUsage(Ogre::HBU_CPU_TO_GPU);
             mLines.begin(mat, Ogre::RenderOperation::OT_LINE_LIST);
+            mBegin = true;
         }
         else if (mLines.getCurrentVertexCount() == 0)
+        {
             mLines.beginUpdate(0);
+            mBegin = true;
+        }
 		
 		Ogre::ColourValue col(color.x(), color.x(), color.z());
 		mLines.position(Convert::toOgre(from));

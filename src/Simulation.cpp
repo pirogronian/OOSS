@@ -75,5 +75,19 @@ void Simulation::populate()
 
 void Simulation::clear()
 {
-    
+    clearRigidBodies(true);
+}
+
+void Simulation::clearRigidBodies(bool clearnodes)
+{
+    for (std::size_t i = 0; i < _world.getMaxRigidBodyIndex(); i++) {
+        RigidBody *rb = _world.getRigidBody(i);
+        if (!rb)  continue;
+        _world.removeRigidBody(rb);
+        if (clearnodes) {
+            Ogre::SceneNode *sn = rb->getSceneNode();
+            if (sn)  _sceneMgr->destroySceneNode(sn);
+        }
+        delete rb;
+    }
 }
