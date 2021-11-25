@@ -14,7 +14,7 @@ class Application :  public OgreBites::ApplicationContext, public OgreBites::Inp
     int _frameLimit{-1};
     struct VisibleUI {
         bool demoWindow {false};
-        bool mainMenu {false};
+        bool mainMenu {true};
     };
     VisibleUI _visibleUI;
 public:

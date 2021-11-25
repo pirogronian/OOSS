@@ -165,6 +165,11 @@ void Application::updateMainMenu()
     bool quit {false};
     bool newsim {false};
     bool clrsim {false};
+    
+    bool showNodes = _sceneMgr->getDisplaySceneNodes();
+    bool showBboxes = _sceneMgr->getShowBoundingBoxes();
+    int mode = _sim->getPhysicsDebugDrawer()->getDebugMode();
+    bool showPhysDebug = (mode == BtOgre::DebugDrawer::DBG_NoDebug ? false : true);
     if (ImGui::BeginMainMenuBar()) {
         if (ImGui::BeginMenu("Program")) {
             ImGui::MenuItem("Populate simulation", "", &newsim);
@@ -172,9 +177,21 @@ void Application::updateMainMenu()
             ImGui::MenuItem("Quit", "Esc", &quit);
             ImGui::EndMenu();
         }
+        if (ImGui::BeginMenu("View")) {
+            ImGui::MenuItem("Show nodes", "", &showNodes);
+            ImGui::MenuItem("Show boxes", "", &showBboxes);
+            ImGui::MenuItem("Show physics", "", &showPhysDebug);
+            ImGui::EndMenu();
+        }
         ImGui::EndMainMenuBar();
     }
     if (newsim) _sim->populate();
     if (clrsim) _sim->clear();
     if (quit) getRoot()->queueEndRendering();
+    
+    _sceneMgr->setDisplaySceneNodes(showNodes);
+    _sceneMgr->showBoundingBoxes(showBboxes);
+    if (showPhysDebug) mode = BtOgre::DebugDrawer::DBG_MAX_DEBUG_DRAW_MODE;
+    else mode = BtOgre::DebugDrawer::DBG_NoDebug;
+    _sim->getPhysicsDebugDrawer()->setDebugMode(mode);
 }

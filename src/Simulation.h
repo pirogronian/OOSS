@@ -21,6 +21,7 @@ public:
     void update(double);
     bool getDebugDraw() const { return _debugDraw; }
     void setDebugDraw(bool d) { _debugDraw = d; }
+    BtOgre::DebugDrawer *getPhysicsDebugDrawer() { return _debugDrawer; }
     Ogre::SceneManager *getSceneManager() { return _sceneMgr; }
     const Ogre::SceneManager *getSceneManager() const { return _sceneMgr; }
     Ogre::Camera *getMainCamera() { return _mainCam; }
