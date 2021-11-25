@@ -15,6 +15,7 @@ class Application :  public OgreBites::ApplicationContext, public OgreBites::Inp
     struct VisibleUI {
         bool demoWindow {false};
         bool mainMenu {true};
+        bool simStats {false};
     };
     VisibleUI _visibleUI;
 public:
@@ -34,4 +35,5 @@ public:
     bool touchReleased (const OgreBites::TouchFingerEvent &evt);
 
     void updateMainMenu();
+    void updateSimStatsWindow();
 };

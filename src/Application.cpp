@@ -46,6 +46,7 @@ bool Application::frameStarted(const Ogre::FrameEvent &evt)
 
     if (_visibleUI.mainMenu)  updateMainMenu();
     if (_visibleUI.demoWindow)  ImGui::ShowDemoWindow();
+    updateSimStatsWindow();
 
     _sim->update(evt.timeSinceLastFrame);
 
@@ -178,6 +179,7 @@ void Application::updateMainMenu()
             ImGui::EndMenu();
         }
         if (ImGui::BeginMenu("View")) {
+            ImGui::MenuItem("Show sim stats", "", &_visibleUI.simStats);
             ImGui::MenuItem("Show nodes", "", &showNodes);
             ImGui::MenuItem("Show boxes", "", &showBboxes);
             ImGui::MenuItem("Show physics", "", &showPhysDebug);
@@ -194,4 +196,19 @@ void Application::updateMainMenu()
     if (showPhysDebug) mode = BtOgre::DebugDrawer::DBG_MAX_DEBUG_DRAW_MODE;
     else mode = BtOgre::DebugDrawer::DBG_NoDebug;
     _sim->getPhysicsDebugDrawer()->setDebugMode(mode);
+}
+
+void Application::updateSimStatsWindow()
+{
+    if (ImGui::Begin("SimStats", &_visibleUI.simStats)) {
+        if (ImGui::BeginTable("SimStats", 2)) {
+            ImGui::TableNextRow();
+            ImGui::TableNextColumn();
+            ImGui::Text("Rigid bodies num:");
+            ImGui::TableNextColumn();
+            ImGui::Text("%i", _sim->getDynamicsWorld().rigidBodiesNumber());
+            ImGui::EndTable();
+        }
+    }
+    ImGui::End();
 }
