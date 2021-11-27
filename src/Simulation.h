@@ -33,4 +33,5 @@ public:
     void populate();
     void clear();
     void clearRigidBodies(bool);
+    void clearGravityCenters(bool);
 };

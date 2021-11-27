@@ -38,6 +38,10 @@ public:
 
     bool addGravityCenter(GravityCenter*);
     bool removeGravityCenter(GravityCenter*);
+    GravityCenter *getGravityCenter(size_t i) { return _gcenters.get(i, nullptr); }
+    const GravityCenter *getGravityCenter(size_t i) const { return _gcenters.get(i, nullptr); }
+    size_t gravityCentersNumber() const { return _gcenters.itemsNumber(); }
+    size_t getMaxGravityCenterIndex() const { return _gcenters.maxIndex(); }
 
     void setGlobalGravity(const btVector3& v) { _world.setGravity(v); }
     btVector3 getGlobalGravity() const { return _world.getGravity(); }

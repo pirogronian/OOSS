@@ -75,6 +75,7 @@ void Simulation::populate()
 
 void Simulation::clear()
 {
+    clearGravityCenters(false);
     clearRigidBodies(true);
 }
 
@@ -89,5 +90,17 @@ void Simulation::clearRigidBodies(bool clearnodes)
             if (sn)  _sceneMgr->destroySceneNode(sn);
         }
         delete rb;
+    }
+}
+
+void Simulation::clearGravityCenters(bool clearnodes) {
+    for (std::size_t i = 0; i < _world.getMaxGravityCenterIndex(); i++) {
+        GravityCenter *gr = _world.getGravityCenter(i);
+        if (!gr) continue;
+        _world.removeGravityCenter(gr);
+        if (clearnodes && gr->isType<Ogre::SceneNode*>()) {
+            Ogre::SceneNode *sn = gr->getOwner<Ogre::SceneNode*>();
+            if (sn)  _sceneMgr->destroySceneNode(sn);
+        }
     }
 }
