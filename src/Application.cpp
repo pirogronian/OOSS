@@ -46,7 +46,7 @@ bool Application::frameStarted(const Ogre::FrameEvent &evt)
 
     if (_visibleUI.mainMenu)  updateMainMenu();
     if (_visibleUI.demoWindow)  ImGui::ShowDemoWindow();
-    updateSimStatsWindow();
+    if (_visibleUI.simStats) updateSimStatsWindow();
 
     _sim->update(evt.timeSinceLastFrame);
 
