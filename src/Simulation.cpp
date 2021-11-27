@@ -34,6 +34,8 @@ void Simulation::update(double delta)
 
 void Simulation::populate()
 {
+    _empty = false;
+
     auto *ogreEnt = _sceneMgr->createEntity("ogrehead.mesh");
     auto *ogrenode = _sceneMgr->getRootSceneNode()->createChildSceneNode();
     ogrenode->attachObject(ogreEnt);
@@ -77,6 +79,8 @@ void Simulation::clear()
 {
     clearGravityCenters(false);
     clearRigidBodies(true);
+    _debugDrawer->clear();
+    _empty = true;
 }
 
 void Simulation::clearRigidBodies(bool clearnodes)

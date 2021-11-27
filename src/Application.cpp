@@ -47,6 +47,7 @@ bool Application::frameStarted(const Ogre::FrameEvent &evt)
     if (_visibleUI.mainMenu)  updateMainMenu();
     if (_visibleUI.demoWindow)  ImGui::ShowDemoWindow();
     if (_visibleUI.simStats) updateSimStatsWindow();
+    /*if (_visibleUI.populateWarning) */updatePopulateWarningWindow();
 
     _sim->update(evt.timeSinceLastFrame);
 
@@ -166,7 +167,7 @@ void Application::updateMainMenu()
     bool quit {false};
     bool newsim {false};
     bool clrsim {false};
-    
+
     bool showNodes = _sceneMgr->getDisplaySceneNodes();
     bool showBboxes = _sceneMgr->getShowBoundingBoxes();
     int mode = _sim->getPhysicsDebugDrawer()->getDebugMode();
@@ -187,7 +188,10 @@ void Application::updateMainMenu()
         }
         ImGui::EndMainMenuBar();
     }
-    if (newsim) _sim->populate();
+    if (newsim) {
+        if (_sim->isEmpty())  _sim->populate();
+        else ImGui::OpenPopup("PopulateWarning");
+    }
     if (clrsim) _sim->clear();
     if (quit) getRoot()->queueEndRendering();
     
@@ -211,4 +215,10 @@ void Application::updateSimStatsWindow()
         }
     }
     ImGui::End();
+}
+
+void Application::updatePopulateWarningWindow() {
+    if (ImGui::BeginPopupModal("PopulateWarning", &_visibleUI.populateWarning)) {
+        ImGui::EndPopup();
+    }
 }

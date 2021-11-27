@@ -16,6 +16,7 @@ class Application :  public OgreBites::ApplicationContext, public OgreBites::Inp
         bool demoWindow {false};
         bool mainMenu {true};
         bool simStats {false};
+        bool populateWarning {false};
     };
     VisibleUI _visibleUI;
 public:
@@ -36,4 +37,5 @@ public:
 
     void updateMainMenu();
     void updateSimStatsWindow();
+    void updatePopulateWarningWindow();
 };

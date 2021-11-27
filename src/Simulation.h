@@ -16,8 +16,10 @@ class Simulation
     DynamicsWorld _world;
     BtOgre::DebugDrawer *_debugDrawer{nullptr};
     bool _debugDraw{true};
+    bool _empty{true};
 public:
     Simulation(Ogre::SceneManager *);
+    bool isEmpty() const { return _empty; }
     void update(double);
     bool getDebugDraw() const { return _debugDraw; }
     void setDebugDraw(bool d) { _debugDraw = d; }
