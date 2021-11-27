@@ -184,13 +184,14 @@ void Application::updateMainMenu()
             ImGui::MenuItem("Show nodes", "", &showNodes);
             ImGui::MenuItem("Show boxes", "", &showBboxes);
             ImGui::MenuItem("Show physics", "", &showPhysDebug);
+            ImGui::MenuItem("Show ImGui demo", "", &_visibleUI.demoWindow);
             ImGui::EndMenu();
         }
         ImGui::EndMainMenuBar();
     }
     if (newsim) {
         if (_sim->isEmpty())  _sim->populate();
-        else ImGui::OpenPopup("PopulateWarning");
+        else ImGui::OpenPopup("Simulation already populated!");
     }
     if (clrsim) _sim->clear();
     if (quit) getRoot()->queueEndRendering();
@@ -218,7 +219,14 @@ void Application::updateSimStatsWindow()
 }
 
 void Application::updatePopulateWarningWindow() {
-    if (ImGui::BeginPopupModal("PopulateWarning", &_visibleUI.populateWarning)) {
+    if (ImGui::BeginPopupModal("Simulation already populated!", nullptr/*&_visibleUI.populateWarning*/)) {
+        ImGui::Text("Simulation is already populated! Are you sure to proceed?");
+        if (ImGui::Button("Yes")) {
+            _sim->populate();
+            ImGui::CloseCurrentPopup();
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("No")) ImGui::CloseCurrentPopup();
         ImGui::EndPopup();
     }
 }
