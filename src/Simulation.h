@@ -15,7 +15,6 @@ class Simulation : public OgreBites::InputListener
 {
     Ogre::SceneManager *_sceneMgr{nullptr};
     Ogre::RenderWindow *_rendWin{nullptr};
-    Ogre::Camera * _dummyCamera{nullptr};
     OgreBites::CameraMan *_currentCamMan{nullptr};
     DynamicsWorld _world;
     BtOgre::DebugDrawer *_debugDrawer{nullptr};

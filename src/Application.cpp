@@ -8,15 +8,6 @@
 
 using namespace std;
 
-void printViewports(Ogre::RenderTarget *rt) {
-    cout << "Vieports: " << rt->getNumViewports() << endl;
-    for (int i = 0; i < 1024; i++) {
-        auto vp = rt->getViewport(i);
-        if (!vp)  continue;
-        cout << "Vp[" << i << "] at " << vp->getZOrder() << endl;
-    }
-}
-
 class RTL : public Ogre::RenderTargetListener {
     Ogre::Viewport *_vp{nullptr};
     Ogre::SceneManager *_sceneMgr{nullptr};
@@ -93,12 +84,8 @@ bool Application::frameStarted(const Ogre::FrameEvent &evt)
 }
 
 /*bool Application::frameEnded(const Ogre::FrameEvent &evt) {
-//     cout << "frameEnded()\n";
-    
     OgreBites::ApplicationContext::frameEnded(evt);
 
-//     Ogre::ImguiManager::getSingleton().endFrame();
-    
     return true;
 }*/ 
 
@@ -148,16 +135,13 @@ bool Application::mouseWheelRolled (const OgreBites::MouseWheelEvent &evt)
 
 bool Application::keyPressed(const OgreBites::KeyboardEvent& evt)
 {
-    cout << "Key pressed:" << evt.keysym.sym << ", " << evt.keysym.mod << endl;
+//     cout << "Key pressed:" << evt.keysym.sym << ", " << evt.keysym.mod << endl;
 
     if (evt.keysym.sym == OgreBites::SDLK_ESCAPE)  getRoot()->queueEndRendering();
     if (evt.keysym.sym == OgreBites::SDLK_F1)  _visibleUI.mainMenu = !_visibleUI.mainMenu;
 
     if (_imguiListener->keyReleased(evt))
         return true;
-
-//     if (_cammanListener->keyReleased(evt))
-//         return true;
 
     return true;
 }
@@ -166,9 +150,6 @@ bool Application::keyReleased(const OgreBites::KeyboardEvent& evt)
 {
     if (_imguiListener->keyReleased(evt))
         return true;
-
-//     if (_cammanListener->keyReleased(evt))
-//         return true;
 
     return true;
 }

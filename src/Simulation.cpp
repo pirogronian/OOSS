@@ -27,7 +27,6 @@ void Simulation::update(double delta)
 
 void Simulation::populate()
 {
-//     destroyDummyVieport();
     _empty = false;
 
     auto *ogreEnt = _sceneMgr->createEntity("ogrehead.mesh");
@@ -40,7 +39,7 @@ void Simulation::populate()
     fishNode->setPosition(0, 50, 0);
 
     _sceneMgr->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
-    
+
     auto shape1 = BtOgre::StaticMeshToShapeConverter(ogreEnt).createTrimesh();
     auto body1 = new RigidBody(ogrenode, 0, shape1);
     _world.addRigidBody(body1);
@@ -60,13 +59,11 @@ void Simulation::populate()
     _world.setGlobalGravity(btVector3(0, 0, 0));
 
     Ogre::Camera *cam = _sceneMgr->createCamera("TestCamera");
-//     auto *cam = _rendWin->getViewport(1024)->getCamera();
     cam->setNearClipDistance(0.5);
     cam->setAutoAspectRatio(true);
-//     auto *vp = _rendWin->addViewport(cam, -1);
     auto vp = addViewport(cam, -1);
     vp->setOverlaysEnabled(false);
-    
+
     auto *camnode = _sceneMgr->getRootSceneNode()->createChildSceneNode();
     camnode->attachObject(cam);
 
@@ -111,35 +108,15 @@ bool Simulation::touchReleased (const OgreBites::TouchFingerEvent &evt) {
     return false;
 }
 
-void Simulation::createDummyVieport() {
-    if (_dummyCamera)  return;
-    _dummyCamera = _sceneMgr->createCamera("DummyCamera");
-    _dummyCamera->setAutoAspectRatio(true);
-    _rendWin->addViewport(_dummyCamera, 1024, 100, 50, 150, 75);
-}
-
-void Simulation::destroyDummyVieport() {
-    if (!_dummyCamera)  return;
-    _rendWin->removeViewport(1024);
-    _sceneMgr->destroyCamera(_dummyCamera);
-    _dummyCamera = nullptr;
-}
-
 void Simulation::clear()
 {
     clearGravityCenters(false);
     clearRigidBodies(false);
-//     cout << "Vps: " << _rendWin->getNumViewports() << endl;
     _sceneMgr->clearScene();
-//     cout << "Vps: " << _rendWin->getNumViewports() << endl;
-//     _rendWin->removeAllViewports();
-//     cout << "Vps: " << _rendWin->getNumViewports() << endl;
-//     _sceneMgr->destroyAllCameras();
     clearViewports(false);
     clearCameras();
     _debugDrawer->clear();
     _empty = true;
-//     createDummyVieport();
 }
 
 void Simulation::clearRigidBodies(bool clearnodes)
@@ -170,8 +147,6 @@ void Simulation::clearGravityCenters(bool clearnodes) {
 
 void Simulation::clearViewports(bool removecams) {
     for(auto z : _vps) {
-//         if (!item) continue;
-//         if (!)
         auto vp = _rendWin->getViewportByZOrder(z);
         auto *cam = vp->getCamera();
         _rendWin->removeViewport(z);
@@ -181,7 +156,6 @@ void Simulation::clearViewports(bool removecams) {
 
 void Simulation::clearCameras() {
     for (auto &cam : _sceneMgr->getCameras()) {
-//         cout << cam.second->getName() << endl;
         _sceneMgr->destroyCamera(cam.second->getName());
     }
 }
