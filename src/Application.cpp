@@ -1,11 +1,38 @@
 
 #include <iostream>
 #include <OgreCameraMan.h>
+#include <OgreOverlayManager.h>
 #include "Application.h"
 
 #include <physics/RigidBody.h>
 
 using namespace std;
+
+void printViewports(Ogre::RenderTarget *rt) {
+    cout << "Vieports: " << rt->getNumViewports() << endl;
+    for (int i = 0; i < 1024; i++) {
+        auto vp = rt->getViewport(i);
+        if (!vp)  continue;
+        cout << "Vp[" << i << "] at " << vp->getZOrder() << endl;
+    }
+}
+
+class RTL : public Ogre::RenderTargetListener {
+    Ogre::Viewport *_vp{nullptr};
+    Ogre::SceneManager *_sceneMgr{nullptr};
+public:
+    RTL(Ogre::SceneManager *sm, Ogre::Viewport *vp) : _sceneMgr(sm), _vp(vp) {}
+    void preViewportUpdate(const Ogre::RenderTargetViewportEvent &e) {
+        if (e.source == _vp) {
+            _sceneMgr->addSpecialCaseRenderQueue(Ogre::RENDER_QUEUE_OVERLAY);
+            _sceneMgr->setSpecialCaseRenderQueueMode(Ogre::SceneManager::SCRQM_INCLUDE);
+        }
+    }
+    void postViewportUpdate(const Ogre::RenderTargetViewportEvent &e) {
+//         if (e.source == _vp)  _sceneMgr->removeSpecialCaseRenderQueue(Ogre::RENDER_QUEUE_OVERLAY);
+        _sceneMgr->clearSpecialCaseRenderQueues();
+    }
+};
 
 Application::Application() : OgreBites::ApplicationContext("OOSS")
 {
@@ -15,18 +42,27 @@ void Application::setup()
 {
     OgreBites::ApplicationContext::setup();
     addInputListener(this);
+    createDummyScene();
 
     _sceneMgr = getRoot()->createSceneManager();
 
     _sim = new Simulation(_sceneMgr);
-    getRenderWindow()->addViewport(_sim->getMainCamera());
+    _sim->setRenderWindow(getRenderWindow());
 
-    Ogre::ImguiManager::createSingleton();
-    Ogre::ImguiManager::getSingleton().init(_sceneMgr);
-    _imguiListener = Ogre::ImguiManager::getSingletonPtr()->getInputListener();
+    _imguiOverlay = new Ogre::ImGuiOverlay();
 
-    _cammanListener = _sim->getMainCameraMan();
-    
+    _imguiOverlay->setZOrder(1024);
+    _imguiOverlay->show();
+    Ogre::OverlayManager::getSingleton().addOverlay(_imguiOverlay);
+
+    _imguiListener = new OgreBites::ImGuiInputListener();
+
+    auto *vp = getRenderWindow()->getViewportByZOrder(0);
+    vp->setClearEveryFrame(false);
+    vp->setOverlaysEnabled(true);
+    auto rec = vp->getActualDimensions();
+    auto rtl = new RTL(_sceneMgr, vp);
+//     getRenderWindow()->addListener(rtl);
 //     _frameLimit = 5;
 //     _sim->populate();
 }
@@ -40,9 +76,7 @@ bool Application::frameStarted(const Ogre::FrameEvent &evt)
 {
     OgreBites::ApplicationContext::frameStarted(evt);
 
-    Ogre::ImguiManager::getSingleton().newFrame(
-            evt.timeSinceLastFrame,
-            Ogre::Rect(0, 0, getRenderWindow()->getWidth(), getRenderWindow()->getHeight()));
+    Ogre::ImGuiOverlay::NewFrame();
 
     if (_visibleUI.mainMenu)  updateMainMenu();
     if (_visibleUI.demoWindow)  ImGui::ShowDemoWindow();
@@ -58,12 +92,22 @@ bool Application::frameStarted(const Ogre::FrameEvent &evt)
     return true;
 }
 
+/*bool Application::frameEnded(const Ogre::FrameEvent &evt) {
+//     cout << "frameEnded()\n";
+    
+    OgreBites::ApplicationContext::frameEnded(evt);
+
+//     Ogre::ImguiManager::getSingleton().endFrame();
+    
+    return true;
+}*/ 
+
 bool Application::mouseMoved (const OgreBites::MouseMotionEvent &evt)
 {
     if (_imguiListener->mouseMoved(evt))
         return true;
 
-    if (_cammanListener->mouseMoved(evt))
+    if (_sim->mouseMoved(evt))
         return true;
 
     return true;
@@ -74,7 +118,7 @@ bool Application::mousePressed (const OgreBites::MouseButtonEvent &evt)
     if (_imguiListener->mousePressed(evt))
         return true;
 
-    if (_cammanListener->mousePressed(evt))
+    if (_sim->mousePressed(evt))
         return true;
 
     return true;
@@ -85,7 +129,7 @@ bool Application::mouseReleased (const OgreBites::MouseButtonEvent &evt)
     if (_imguiListener->mouseReleased(evt))
         return true;
 
-    if (_cammanListener->mouseReleased(evt))
+    if (_sim->mouseReleased(evt))
         return true;
 
     return true;
@@ -96,7 +140,7 @@ bool Application::mouseWheelRolled (const OgreBites::MouseWheelEvent &evt)
     if (_imguiListener->mouseWheelRolled(evt))
         return true;
 
-    if (_cammanListener->mouseWheelRolled(evt))
+    if (_sim->mouseWheelRolled(evt))
         return true;
 
     return true;
@@ -112,8 +156,8 @@ bool Application::keyPressed(const OgreBites::KeyboardEvent& evt)
     if (_imguiListener->keyReleased(evt))
         return true;
 
-    if (_cammanListener->keyReleased(evt))
-        return true;
+//     if (_cammanListener->keyReleased(evt))
+//         return true;
 
     return true;
 }
@@ -123,8 +167,8 @@ bool Application::keyReleased(const OgreBites::KeyboardEvent& evt)
     if (_imguiListener->keyReleased(evt))
         return true;
 
-    if (_cammanListener->keyReleased(evt))
-        return true;
+//     if (_cammanListener->keyReleased(evt))
+//         return true;
 
     return true;
 }
@@ -134,7 +178,7 @@ bool Application::touchMoved(const OgreBites::TouchFingerEvent& evt)
     if (_imguiListener->touchMoved(evt))
         return true;
 
-    if (_cammanListener->touchMoved(evt))
+    if (_sim->touchMoved(evt))
         return true;
 
     return true;
@@ -145,7 +189,7 @@ bool Application::touchPressed(const OgreBites::TouchFingerEvent& evt)
     if (_imguiListener->touchPressed(evt))
         return true;
 
-    if (_cammanListener->touchPressed(evt))
+    if (_sim->touchPressed(evt))
         return true;
 
     return true;
@@ -156,7 +200,7 @@ bool Application::touchReleased(const OgreBites::TouchFingerEvent& evt)
     if (_imguiListener->touchReleased(evt))
         return true;
 
-    if (_cammanListener->touchReleased(evt))
+    if (_sim->touchReleased(evt))
         return true;
 
     return true;

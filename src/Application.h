@@ -1,6 +1,8 @@
 
 #include <OgreApplicationContext.h>
-#include <ImguiManager.h>
+// #include <ImguiManager.h>
+#include <OgreImGuiOverlay.h>
+#include <OgreImGuiInputListener.h>
 
 #include <Simulation.h>
 
@@ -8,8 +10,8 @@ class Application :  public OgreBites::ApplicationContext, public OgreBites::Inp
 {
     Ogre::SceneManager *_sceneMgr;
     Simulation *_sim;
-    OgreBites::InputListener *_imguiListener;
-    OgreBites::InputListener *_cammanListener;
+    OgreBites::ImGuiInputListener *_imguiListener;
+    Ogre::ImGuiOverlay *_imguiOverlay;
     int _frameCounter {0};
     int _frameLimit{-1};
     struct VisibleUI {
@@ -24,6 +26,7 @@ public:
     void setup();
     void shutdown();
     bool frameStarted(const Ogre::FrameEvent &);
+//     bool frameEnded(const Ogre::FrameEvent &);
 //     void frameRendered (const Ogre::FrameEvent &evt)
     bool keyPressed (const OgreBites::KeyboardEvent &evt);
     bool keyReleased (const OgreBites::KeyboardEvent &evt);

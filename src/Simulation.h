@@ -1,22 +1,27 @@
 
 #pragma once
 
+#include <set>
+
 #include <OgreRoot.h>
 #include <OgreSceneManager.h>
 #include <OgreSceneNode.h>
+#include <OgreInput.h>
 #include <OgreCameraMan.h>
 
 #include <physics/DynamicsWorld.h>
 
-class Simulation
+class Simulation : public OgreBites::InputListener
 {
     Ogre::SceneManager *_sceneMgr{nullptr};
-    Ogre::Camera *_mainCam{nullptr};
-    OgreBites::CameraMan *_mainCamMan{nullptr};
+    Ogre::RenderWindow *_rendWin{nullptr};
+    Ogre::Camera * _dummyCamera{nullptr};
+    OgreBites::CameraMan *_currentCamMan{nullptr};
     DynamicsWorld _world;
     BtOgre::DebugDrawer *_debugDrawer{nullptr};
     bool _debugDraw{true};
     bool _empty{true};
+    std::set<int> _vps;
 public:
     Simulation(Ogre::SceneManager *);
     bool isEmpty() const { return _empty; }
@@ -27,13 +32,30 @@ public:
     DynamicsWorld &getDynamicsWorld() { return _world; }
     Ogre::SceneManager *getSceneManager() { return _sceneMgr; }
     const Ogre::SceneManager *getSceneManager() const { return _sceneMgr; }
-    Ogre::Camera *getMainCamera() { return _mainCam; }
-    const Ogre::Camera *getMainCamera() const { return _mainCam; }
-    OgreBites::CameraMan *getMainCameraMan() { return _mainCamMan; }
-    const OgreBites::CameraMan *getMainCameraMan() const { return _mainCamMan; }
+    void setRenderWindow(Ogre::RenderWindow *w) { _rendWin = w; }
+    OgreBites::CameraMan *getCurrentCameraMan() { return _currentCamMan; }
+    const OgreBites::CameraMan *getCurrentCameraMan() const { return _currentCamMan; }
+    Ogre::Viewport *addViewport(Ogre::Camera *cam, int z) {
+        auto *vp = _rendWin->addViewport(cam, z);
+        _vps.insert(z);
+        return vp;
+    }
 
+    bool mouseMoved (const OgreBites::MouseMotionEvent &evt);
+    bool mousePressed (const OgreBites::MouseButtonEvent &evt);
+    bool mouseReleased (const OgreBites::MouseButtonEvent &evt);
+    bool mouseWheelRolled (const OgreBites::MouseWheelEvent &evt);
+    bool touchMoved (const OgreBites::TouchFingerEvent &evt);
+    bool touchPressed (const OgreBites::TouchFingerEvent &evt);
+    bool touchReleased (const OgreBites::TouchFingerEvent &evt);
+
+    void createDummyVieport();
+    void destroyDummyVieport();
     void populate();
     void clear();
     void clearRigidBodies(bool);
     void clearGravityCenters(bool);
+    void clearViewports(bool);
+    void clearCameras();
+    
 };

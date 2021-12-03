@@ -6,21 +6,14 @@
 #include <physics/RigidBody.h>
 #include <physics/GravityCenter.h>
 
+using namespace std;
+
 Simulation::Simulation(Ogre::SceneManager *sceneMgr)
 {
     _sceneMgr = sceneMgr;
     Ogre::RTShader::ShaderGenerator* shadergen = Ogre::RTShader::ShaderGenerator::getSingletonPtr();
     shadergen->addSceneManager(_sceneMgr);
     _debugDrawer = new BtOgre::DebugDrawer(_sceneMgr->getRootSceneNode(), &_world.getBtWorld());
-
-    _mainCam = _sceneMgr->createCamera("MainCamera");
-    _mainCam->setNearClipDistance(0.5);
-    _mainCam->setAutoAspectRatio(true);
-    auto *camnode = _sceneMgr->getRootSceneNode()->createChildSceneNode();
-    camnode->attachObject(_mainCam);
-
-    _mainCamMan = new OgreBites::CameraMan(camnode);
-    _mainCamMan->setStyle(OgreBites::CS_ORBIT);
 }
 
 void Simulation::update(double delta)
@@ -34,6 +27,7 @@ void Simulation::update(double delta)
 
 void Simulation::populate()
 {
+//     destroyDummyVieport();
     _empty = false;
 
     auto *ogreEnt = _sceneMgr->createEntity("ogrehead.mesh");
@@ -65,22 +59,87 @@ void Simulation::populate()
 
     _world.setGlobalGravity(btVector3(0, 0, 0));
 
-//     body2->getBtRigidBody()->applyCentralImpulse(btVector3(91, 0, 0));
-//     body2->getBtRigidBody()->applyTorqueImpulse(btVector3(92, 0, 0));
-//     body2->getBtRigidBody()->applyCentralForce(btVector3(0, 1, 0));
-//     body2->getBtRigidBody()->integrateVelocities(0.1);
-//     dump(body2->getBtRigidBody());
-//     body2->applyTorque(btVector3(1, 0, 0));
-//     dump(body2);
-    _mainCamMan->setYawPitchDist(Ogre::Degree(45), Ogre::Degree(45), 120);
+    Ogre::Camera *cam = _sceneMgr->createCamera("TestCamera");
+//     auto *cam = _rendWin->getViewport(1024)->getCamera();
+    cam->setNearClipDistance(0.5);
+    cam->setAutoAspectRatio(true);
+//     auto *vp = _rendWin->addViewport(cam, -1);
+    auto vp = addViewport(cam, -1);
+    vp->setOverlaysEnabled(false);
+    
+    auto *camnode = _sceneMgr->getRootSceneNode()->createChildSceneNode();
+    camnode->attachObject(cam);
+
+    _currentCamMan = new OgreBites::CameraMan(camnode);
+    _currentCamMan->setStyle(OgreBites::CS_ORBIT);
+    _currentCamMan->setYawPitchDist(Ogre::Degree(45), Ogre::Degree(45), 120);
+}
+
+
+bool Simulation::mouseMoved(const OgreBites::MouseMotionEvent &evt) {
+    if (_currentCamMan)  return _currentCamMan->mouseMoved(evt);
+    return false;
+}
+
+bool Simulation::mousePressed(const OgreBites::MouseButtonEvent &evt) {
+    if (_currentCamMan)  return _currentCamMan->mousePressed(evt);
+    return false;
+}
+
+bool Simulation::mouseReleased(const OgreBites::MouseButtonEvent &evt) {
+    if (_currentCamMan)  return _currentCamMan->mouseReleased(evt);
+    return false;
+}
+
+bool Simulation::mouseWheelRolled(const OgreBites::MouseWheelEvent &evt) {
+    if (_currentCamMan)  return _currentCamMan->mouseWheelRolled(evt);
+    return false;
+}
+
+bool Simulation::touchMoved (const OgreBites::TouchFingerEvent &evt) {
+    if (_currentCamMan)  return _currentCamMan->touchMoved(evt);
+    return false;
+}
+
+bool Simulation::touchPressed (const OgreBites::TouchFingerEvent &evt) {
+    if (_currentCamMan)  return _currentCamMan->touchPressed(evt);
+    return false;
+}
+
+bool Simulation::touchReleased (const OgreBites::TouchFingerEvent &evt) {
+    if (_currentCamMan)  return _currentCamMan->touchReleased(evt);
+    return false;
+}
+
+void Simulation::createDummyVieport() {
+    if (_dummyCamera)  return;
+    _dummyCamera = _sceneMgr->createCamera("DummyCamera");
+    _dummyCamera->setAutoAspectRatio(true);
+    _rendWin->addViewport(_dummyCamera, 1024, 100, 50, 150, 75);
+}
+
+void Simulation::destroyDummyVieport() {
+    if (!_dummyCamera)  return;
+    _rendWin->removeViewport(1024);
+    _sceneMgr->destroyCamera(_dummyCamera);
+    _dummyCamera = nullptr;
 }
 
 void Simulation::clear()
 {
     clearGravityCenters(false);
-    clearRigidBodies(true);
+    clearRigidBodies(false);
+//     cout << "Vps: " << _rendWin->getNumViewports() << endl;
+    _sceneMgr->clearScene();
+//     cout << "Vps: " << _rendWin->getNumViewports() << endl;
+//     _rendWin->removeAllViewports();
+//     cout << "Vps: " << _rendWin->getNumViewports() << endl;
+//     _sceneMgr->destroyAllCameras();
+    clearViewports(false);
+    clearCameras();
     _debugDrawer->clear();
     _empty = true;
+//     createDummyVieport();
 }
 
 void Simulation::clearRigidBodies(bool clearnodes)
@@ -106,5 +165,23 @@ void Simulation::clearGravityCenters(bool clearnodes) {
             Ogre::SceneNode *sn = gr->getOwner<Ogre::SceneNode*>();
             if (sn)  _sceneMgr->destroySceneNode(sn);
         }
+    }
+}
+
+void Simulation::clearViewports(bool removecams) {
+    for(auto z : _vps) {
+//         if (!item) continue;
+//         if (!)
+        auto vp = _rendWin->getViewportByZOrder(z);
+        auto *cam = vp->getCamera();
+        _rendWin->removeViewport(z);
+        if (removecams)  _sceneMgr->destroyCamera(cam);
+    }
+}
+
+void Simulation::clearCameras() {
+    for (auto &cam : _sceneMgr->getCameras()) {
+//         cout << cam.second->getName() << endl;
+        _sceneMgr->destroyCamera(cam.second->getName());
     }
 }
