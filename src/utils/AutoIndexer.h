@@ -114,6 +114,8 @@
             if (!isIndexValid(m_vector, i))  return def;
             return m_vector[i].value_or(def);
         }
+//         std::vector<std::optional<VType>>& getItems() { return m_vector; }
+        const std::vector<std::optional<VType>>& getItems() const { return m_vector; }
         void clear()
         {
             m_vector.clear();
