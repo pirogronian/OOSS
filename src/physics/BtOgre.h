@@ -238,6 +238,11 @@ public:
 		mWorld->setDebugDrawer(this);
     }
 
+    void attach(Ogre::SceneNode *node) {
+        mLines.detachFromParent();
+        node->attachObject(&mLines);
+    }
+
     void update()
     {
         mBegin = false;

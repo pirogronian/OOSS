@@ -115,7 +115,9 @@ void Simulation::clear()
     _sceneMgr->clearScene();
     clearViewports(false);
     clearCameras();
-//     _debugDrawer->clear();
+
+    // Clearing the scene detaches internal ManualObject, so it has to be attached again.
+    _debugDrawer->attach(_sceneMgr->getRootSceneNode());
     _empty = true;
 }
 
