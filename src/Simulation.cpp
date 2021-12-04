@@ -115,7 +115,7 @@ void Simulation::clear()
     _sceneMgr->clearScene();
     clearViewports(false);
     clearCameras();
-    _debugDrawer->clear();
+//     _debugDrawer->clear();
     _empty = true;
 }
 
