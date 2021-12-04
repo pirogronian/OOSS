@@ -13,15 +13,27 @@ class RTL : public Ogre::RenderTargetListener {
     Ogre::SceneManager *_sceneMgr{nullptr};
 public:
     RTL(Ogre::SceneManager *sm, Ogre::Viewport *vp) : _sceneMgr(sm), _vp(vp) {}
-    void preViewportUpdate(const Ogre::RenderTargetViewportEvent &e) {
-        if (e.source == _vp) {
-            _sceneMgr->addSpecialCaseRenderQueue(Ogre::RENDER_QUEUE_OVERLAY);
-            _sceneMgr->setSpecialCaseRenderQueueMode(Ogre::SceneManager::SCRQM_INCLUDE);
-        }
+//     void preViewportUpdate(const Ogre::RenderTargetViewportEvent &e) {
+//         if (e.source == _vp) {
+//             _sceneMgr->addSpecialCaseRenderQueue(Ogre::RENDER_QUEUE_OVERLAY);
+//             _sceneMgr->setSpecialCaseRenderQueueMode(Ogre::SceneManager::SCRQM_INCLUDE);
+//         }
+//     }
+//     void postViewportUpdate(const Ogre::RenderTargetViewportEvent &e) {
+// //         if (e.source == _vp)  _sceneMgr->removeSpecialCaseRenderQueue(Ogre::RENDER_QUEUE_OVERLAY);
+//         _sceneMgr->clearSpecialCaseRenderQueues();
+//     }
+    void viewportAdded(const Ogre::RenderTargetViewportEvent &e) {
+//         cout << "Viewport added\n";
+        _vp->setClearEveryFrame(false);
     }
-    void postViewportUpdate(const Ogre::RenderTargetViewportEvent &e) {
-//         if (e.source == _vp)  _sceneMgr->removeSpecialCaseRenderQueue(Ogre::RENDER_QUEUE_OVERLAY);
-        _sceneMgr->clearSpecialCaseRenderQueues();
+    
+    void viewportRemoved(const Ogre::RenderTargetViewportEvent &e) {
+        auto n = e.source->getTarget()->getNumViewports();
+//         cout << "Viewport removed." << n << endl;
+        if (n < 3) {
+            _vp->setClearEveryFrame(true);
+        }
     }
 };
 
@@ -49,11 +61,11 @@ void Application::setup()
     _imguiListener = new OgreBites::ImGuiInputListener();
 
     auto *vp = getRenderWindow()->getViewportByZOrder(0);
-    vp->setClearEveryFrame(false);
+//     vp->setClearEveryFrame(false);
     vp->setOverlaysEnabled(true);
     auto rec = vp->getActualDimensions();
     auto rtl = new RTL(_sceneMgr, vp);
-//     getRenderWindow()->addListener(rtl);
+    getRenderWindow()->addListener(rtl);
 //     _frameLimit = 5;
 //     _sim->populate();
 }
