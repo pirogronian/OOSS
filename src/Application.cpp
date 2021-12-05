@@ -1,5 +1,6 @@
 
 #include <iostream>
+#include <fstream>
 #include <OgreCameraMan.h>
 #include <OgreOverlayManager.h>
 #include "Application.h"
@@ -37,6 +38,8 @@ public:
     }
 };
 
+static const char AppStateFileName[] = "AppStateFileName";
+
 Application::Application() : OgreBites::ApplicationContext("OOSS")
 {
 }
@@ -46,6 +49,16 @@ void Application::setup()
     OgreBites::ApplicationContext::setup();
     addInputListener(this);
     createDummyScene();
+
+    {
+        ifstream is(AppStateFileName);
+        try {
+            cereal::XMLInputArchive ia(is);
+            ia(*this);
+        } catch(cereal::Exception e) {
+            cerr << e.what() << endl;
+        }
+    }
 
     _sceneMgr = getRoot()->createSceneManager();
 
@@ -72,6 +85,12 @@ void Application::setup()
 
 void Application::shutdown()
 {
+    {
+        ofstream os(AppStateFileName);
+        cereal::XMLOutputArchive oa(os);
+        oa(*this);
+    }
+
     OgreBites::ApplicationContext::shutdown();
 }
 

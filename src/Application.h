@@ -4,6 +4,8 @@
 #include <OgreImGuiOverlay.h>
 #include <OgreImGuiInputListener.h>
 
+#include <cereal/archives/xml.hpp>
+
 #include <Simulation.h>
 
 class Application :  public OgreBites::ApplicationContext, public OgreBites::InputListener
@@ -19,6 +21,10 @@ class Application :  public OgreBites::ApplicationContext, public OgreBites::Inp
         bool mainMenu {true};
         bool simStats {false};
         bool populateWarning {false};
+        template<class Archive>
+        void serialize(Archive &archv) {
+            archv(CEREAL_NVP(demoWindow), CEREAL_NVP(mainMenu), CEREAL_NVP(simStats));
+        }
     };
     VisibleUI _visibleUI;
 public:
@@ -41,4 +47,9 @@ public:
     void updateMainMenu();
     void updateSimStatsWindow();
     void updatePopulateWarningWindow();
+
+    template<class Archive>
+    void serialize(Archive &archv) {
+        archv(cereal::make_nvp("VisibleUI", _visibleUI));
+    }
 };
