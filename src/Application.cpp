@@ -202,8 +202,10 @@ bool Application::touchReleased(const OgreBites::TouchFingerEvent& evt)
 void Application::updateMainMenu()
 {
     bool quit {false};
-    bool newsim {false};
-    bool clrsim {false};
+    bool newSimBuiltin {false};
+    bool clearSim {false};
+    bool loadSim {false};
+    bool saveSim {false};
 
     bool showNodes = _sceneMgr->getDisplaySceneNodes();
     bool showBboxes = _sceneMgr->getShowBoundingBoxes();
@@ -211,9 +213,14 @@ void Application::updateMainMenu()
     bool showPhysDebug = (mode == BtOgre::DebugDrawer::DBG_NoDebug ? false : true);
     if (ImGui::BeginMainMenuBar()) {
         if (ImGui::BeginMenu("Program")) {
-            ImGui::MenuItem("Populate simulation", "", &newsim);
-            ImGui::MenuItem("Clear simulation", "", &clrsim);
             ImGui::MenuItem("Quit", "Esc", &quit);
+            ImGui::EndMenu();
+        }
+        if (ImGui::BeginMenu("Simulation")) {
+            ImGui::MenuItem("New built-in", "", &newSimBuiltin);
+            ImGui::MenuItem("Clear", "", &clearSim);
+            ImGui::MenuItem("Load", "", &loadSim);
+            ImGui::MenuItem("Save", "", &saveSim);
             ImGui::EndMenu();
         }
         if (ImGui::BeginMenu("View")) {
@@ -226,13 +233,13 @@ void Application::updateMainMenu()
         }
         ImGui::EndMainMenuBar();
     }
-    if (newsim) {
+    if (newSimBuiltin) {
         if (_sim->isEmpty())  _sim->populate();
         else ImGui::OpenPopup("Simulation already populated!");
     }
-    if (clrsim) _sim->clear();
+    if (clearSim) _sim->clear();
     if (quit) getRoot()->queueEndRendering();
-    
+
     _sceneMgr->setDisplaySceneNodes(showNodes);
     _sceneMgr->showBoundingBoxes(showBboxes);
     if (showPhysDebug) mode = BtOgre::DebugDrawer::DBG_MAX_DEBUG_DRAW_MODE;
