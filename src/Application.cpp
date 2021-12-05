@@ -238,6 +238,9 @@ void Application::updateMainMenu()
         else ImGui::OpenPopup("Simulation already populated!");
     }
     if (clearSim) _sim->clear();
+    string name("defaultSave");
+    if (loadSim)  _sim->load(name);
+    if (saveSim)  _sim->save(name);
     if (quit) getRoot()->queueEndRendering();
 
     _sceneMgr->setDisplaySceneNodes(showNodes);

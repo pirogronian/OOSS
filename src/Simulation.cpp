@@ -161,3 +161,13 @@ void Simulation::clearCameras() {
         _sceneMgr->destroyCamera(cam.second->getName());
     }
 }
+
+bool Simulation::load(const string &name) {
+    _sceneMgr->getRootSceneNode()->loadChildren(name + ".scene");
+    return true;
+}
+
+bool Simulation::save(const string &name) const {
+    _sceneMgr->getRootSceneNode()->saveChildren(name + ".scene");
+    return true;
+}

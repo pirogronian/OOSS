@@ -2,6 +2,7 @@
 #pragma once
 
 #include <set>
+#include <string>
 
 #include <OgreRoot.h>
 #include <OgreSceneManager.h>
@@ -56,5 +57,7 @@ public:
     void clearGravityCenters(bool);
     void clearViewports(bool);
     void clearCameras();
-    
+
+    bool load(const std::string &);
+    bool save(const std::string &) const;
 };

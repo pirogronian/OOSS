@@ -31,6 +31,8 @@ target_include_directories(OOSS SYSTEM PUBLIC ${OGRE_INCLUDE_DIRS}/RTShaderSyste
 find_package(Bullet REQUIRED)
 target_include_directories(OOSS SYSTEM PUBLIC ${BULLET_INCLUDE_DIRS})
 
+find_package(Cereal REQUIRED)
+
 target_include_directories(OOSS SYSTEM PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/imgui)
 
 target_include_directories(OOSS SYSTEM PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/ogre-imgui)
