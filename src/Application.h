@@ -10,12 +10,13 @@
 
 class Application :  public OgreBites::ApplicationContext, public OgreBites::InputListener
 {
-    Ogre::SceneManager *_sceneMgr;
-    Simulation *_sim;
-    OgreBites::ImGuiInputListener *_imguiListener;
-    Ogre::ImGuiOverlay *_imguiOverlay;
-    int _frameCounter {0};
-    int _frameLimit{-1};
+    enum Operations {
+        NoOperation = 0,
+        NewBuiltinSimulation,
+        ClearSimulation,
+        LoadSimulation,
+        SaveSimulation
+    };
     struct VisibleUI {
         bool demoWindow {false};
         bool mainMenu {true};
@@ -26,6 +27,13 @@ class Application :  public OgreBites::ApplicationContext, public OgreBites::Inp
             archv(CEREAL_NVP(demoWindow), CEREAL_NVP(mainMenu), CEREAL_NVP(simStats));
         }
     };
+    Ogre::SceneManager *_sceneMgr;
+    Simulation *_sim;
+    OgreBites::ImGuiInputListener *_imguiListener;
+    Ogre::ImGuiOverlay *_imguiOverlay;
+    int _frameCounter {0};
+    int _frameLimit{-1};
+    Operations _currentOp{Operations::NoOperation};
     VisibleUI _visibleUI;
 public:
     Application();
@@ -46,10 +54,22 @@ public:
 
     void updateMainMenu();
     void updateSimStatsWindow();
-    void updatePopulateWarningWindow();
+    void newBuiltinSimulationWarningWindow();
 
     template<class Archive>
     void serialize(Archive &archv) {
         archv(cereal::make_nvp("VisibleUI", _visibleUI));
     }
+
+    void doNewBuiltinSimulation();
+    void doClearSimulation();
+    void doLoadSimulation();
+    void doSaveSimulation();
+    
+    void newBuiltinSimulation();
+    void clearSimulation();
+    void loadSimulation();
+    void saveSimulation();
+    
+    void closeOperationPopup();
 };

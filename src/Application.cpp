@@ -9,6 +9,8 @@
 
 using namespace std;
 
+static const char DefaultSaveName[] {"defaultSave"};
+
 class RTL : public Ogre::RenderTargetListener {
     Ogre::Viewport *_vp{nullptr};
     Ogre::SceneManager *_sceneMgr{nullptr};
@@ -103,7 +105,7 @@ bool Application::frameStarted(const Ogre::FrameEvent &evt)
     if (_visibleUI.mainMenu)  updateMainMenu();
     if (_visibleUI.demoWindow)  ImGui::ShowDemoWindow();
     if (_visibleUI.simStats) updateSimStatsWindow();
-    /*if (_visibleUI.populateWarning) */updatePopulateWarningWindow();
+    /*if (_visibleUI.populateWarning) */newBuiltinSimulationWarningWindow();
 
     _sim->update(evt.timeSinceLastFrame);
 
@@ -252,14 +254,10 @@ void Application::updateMainMenu()
         }
         ImGui::EndMainMenuBar();
     }
-    if (newSimBuiltin) {
-        if (_sim->isEmpty())  _sim->populate();
-        else ImGui::OpenPopup("Simulation already populated!");
-    }
+    if (newSimBuiltin)  newBuiltinSimulation();
     if (clearSim) _sim->clear();
-    string name("defaultSave");
-    if (loadSim)  _sim->load(name);
-    if (saveSim)  _sim->save(name);
+    if (loadSim)  _sim->load(DefaultSaveName);
+    if (saveSim)  _sim->save(DefaultSaveName);
     if (quit) getRoot()->queueEndRendering();
 
     _sceneMgr->setDisplaySceneNodes(showNodes);
@@ -284,15 +282,46 @@ void Application::updateSimStatsWindow()
     ImGui::End();
 }
 
-void Application::updatePopulateWarningWindow() {
-    if (ImGui::BeginPopupModal("Simulation already populated!", nullptr/*&_visibleUI.populateWarning*/)) {
-        ImGui::Text("Simulation is already populated! Are you sure to proceed?");
+void Application::newBuiltinSimulationWarningWindow() {
+    if (ImGui::BeginPopupModal("Simulation not empty!", nullptr/*&_visibleUI.populateWarning*/)) {
+        ImGui::Text("Simulation is not empty! Are you sure to proceed?");
         if (ImGui::Button("Yes")) {
-            _sim->populate();
-            ImGui::CloseCurrentPopup();
+            doNewBuiltinSimulation();
+            closeOperationPopup();
         }
         ImGui::SameLine();
-        if (ImGui::Button("No")) ImGui::CloseCurrentPopup();
+        if (ImGui::Button("No")) closeOperationPopup();
         ImGui::EndPopup();
     }
+}
+
+void Application::doNewBuiltinSimulation() {
+    _sim->populate();
+}
+
+void Application::doClearSimulation() {
+    _sim->clear();
+}
+
+void Application::doLoadSimulation() {
+    _sim->load(DefaultSaveName);
+}
+
+void Application::doSaveSimulation() {
+    _sim->save(DefaultSaveName);
+}
+
+void Application::newBuiltinSimulation() {
+    if (_currentOp != NoOperation)  return;
+    if (_sim->isEmpty()) {
+        doNewBuiltinSimulation();
+        return;
+    }
+    _currentOp = NewBuiltinSimulation;
+    ImGui::OpenPopup("Simulation not empty!");
+}
+
+void Application::closeOperationPopup() {
+    ImGui::CloseCurrentPopup();
+    _currentOp = NoOperation;
 }
