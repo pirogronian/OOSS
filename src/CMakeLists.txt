@@ -69,6 +69,8 @@ target_sources(OOSS PRIVATE
     Application.cpp
     Simulation.h
     Simulation.cpp
+    Player.h
+    Player.cpp
     physics/physics.h
     physics/physics.cpp
     physics/BtOgre.h
