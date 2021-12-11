@@ -23,7 +23,7 @@ class Simulation : public OgreBites::InputListener
     BtOgre::DebugDrawer *_debugDrawer{nullptr};
     bool _debugDraw{true};
     bool _empty{true};
-    Player _pl{nullptr};
+    Player _pl{this};
 public:
     Simulation(Ogre::SceneManager *);
     bool isEmpty() const { return _empty; }
@@ -34,7 +34,9 @@ public:
     DynamicsWorld &getDynamicsWorld() { return _world; }
     Ogre::SceneManager *getSceneManager() { return _sceneMgr; }
     const Ogre::SceneManager *getSceneManager() const { return _sceneMgr; }
-    void setRenderTarget(Ogre::RenderTarget *rt) { _rt = rt; _pl.setRenderTarget(rt); }
+    Ogre::RenderTarget *getRenderTarget() { return _rt; }
+    Ogre::RenderTarget const *getRenderTarget() const { return _rt; }
+    void setRenderTarget(Ogre::RenderTarget *rt) { _rt = rt; }
     OgreBites::CameraMan *getCurrentCameraMan() { return _currentCamMan; }
     const OgreBites::CameraMan *getCurrentCameraMan() const { return _currentCamMan; }
     Player &getPlayer() { return _pl; }
