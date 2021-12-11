@@ -30,7 +30,7 @@ public:
 //         cout << "Viewport added\n";
         _vp->setClearEveryFrame(false);
     }
-    
+
     void viewportRemoved(const Ogre::RenderTargetViewportEvent &e) {
         auto n = e.source->getTarget()->getNumViewports();
 //         cout << "Viewport removed." << n << endl;
@@ -65,7 +65,7 @@ void Application::setup()
     _sceneMgr = getRoot()->createSceneManager();
 
     _sim = new Simulation(_sceneMgr);
-    _sim->setRenderWindow(getRenderWindow());
+    _sim->setRenderTarget(getRenderWindow());
 
     _imguiOverlay = new Ogre::ImGuiOverlay();
 

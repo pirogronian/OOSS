@@ -61,7 +61,7 @@ void Simulation::populate()
     Ogre::Camera *cam = _sceneMgr->createCamera("TestCamera");
     cam->setNearClipDistance(0.5);
     cam->setAutoAspectRatio(true);
-    auto vp = addViewport(cam, -1);
+    auto vp = _pl.addViewport(cam, -1);
     vp->setOverlaysEnabled(false);
 
     auto *camnode = _sceneMgr->getRootSceneNode()->createChildSceneNode();
@@ -113,7 +113,7 @@ void Simulation::clear()
     clearGravityCenters(false);
     clearRigidBodies(false);
     _sceneMgr->clearScene();
-    clearViewports(false);
+    _pl.clear();
     clearCameras();
 
     // Clearing the scene detaches internal ManualObject, so it has to be attached again.
@@ -149,9 +149,9 @@ void Simulation::clearGravityCenters(bool clearnodes) {
 
 void Simulation::clearViewports(bool removecams) {
     for(auto z : _vps) {
-        auto vp = _rendWin->getViewportByZOrder(z);
+        auto vp = _rt->getViewportByZOrder(z);
         auto *cam = vp->getCamera();
-        _rendWin->removeViewport(z);
+        _rt->removeViewport(z);
         if (removecams)  _sceneMgr->destroyCamera(cam);
     }
 }
