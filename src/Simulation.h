@@ -23,7 +23,6 @@ class Simulation : public OgreBites::InputListener
     BtOgre::DebugDrawer *_debugDrawer{nullptr};
     bool _debugDraw{true};
     bool _empty{true};
-    std::set<int> _vps;
     Player _pl{nullptr};
 public:
     Simulation(Ogre::SceneManager *);
@@ -38,11 +37,8 @@ public:
     void setRenderTarget(Ogre::RenderTarget *rt) { _rt = rt; _pl.setRenderTarget(rt); }
     OgreBites::CameraMan *getCurrentCameraMan() { return _currentCamMan; }
     const OgreBites::CameraMan *getCurrentCameraMan() const { return _currentCamMan; }
-    Ogre::Viewport *addViewport(Ogre::Camera *cam, int z) {
-        auto *vp = _rt->addViewport(cam, z);
-        _vps.insert(z);
-        return vp;
-    }
+    Player &getPlayer() { return _pl; }
+    const Player &getPlayer() const { return _pl; }
 
     bool mouseMoved (const OgreBites::MouseMotionEvent &evt);
     bool mousePressed (const OgreBites::MouseButtonEvent &evt);
@@ -58,7 +54,6 @@ public:
     void clear();
     void clearRigidBodies(bool);
     void clearGravityCenters(bool);
-    void clearViewports(bool);
     void clearCameras();
 
     bool load(const std::string &);

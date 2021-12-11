@@ -147,15 +147,6 @@ void Simulation::clearGravityCenters(bool clearnodes) {
     }
 }
 
-void Simulation::clearViewports(bool removecams) {
-    for(auto z : _vps) {
-        auto vp = _rt->getViewportByZOrder(z);
-        auto *cam = vp->getCamera();
-        _rt->removeViewport(z);
-        if (removecams)  _sceneMgr->destroyCamera(cam);
-    }
-}
-
 void Simulation::clearCameras() {
     for (auto &cam : _sceneMgr->getCameras()) {
         _sceneMgr->destroyCamera(cam.second->getName());
