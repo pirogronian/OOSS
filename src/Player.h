@@ -5,18 +5,30 @@
 
 #include <OgreViewport.h>
 #include <OgreRenderTarget.h>
+#include <OgreInput.h>
+#include <OgreCameraMan.h>
 
 #include "Simulation.h"
 
-class Player {
-    Simulation *_sim;
+class Player : public OgreBites::InputListener {
+    Simulation *_sim{nullptr};
     std::vector<Ogre::Viewport*> _vps;
+    OgreBites::CameraMan *_cm{nullptr};
 public:
     Player(Simulation *s) : _sim(s) {}
+
     Simulation *getSimulation() { return _sim; }
     Simulation const *getSimulation() const { return _sim; }
+
     Ogre::RenderTarget *getRenderTarget();
     const Ogre::RenderTarget *getRenderTarget() const;
+
+    void createCameraMan();
+    void deleteCameraMan();
+    void restoreCameraMan();
+    OgreBites::CameraMan *getCameraMan() { return _cm; }
+    OgreBites::CameraMan const *getCameraMan() const { return _cm; }
+
     Ogre::Viewport *addViewport(Ogre::Camera *, int = 0, Ogre::Real = 0, Ogre::Real = 0, Ogre::Real = 1, Ogre::Real = 1);
     int getNumViewports() const { return _vps.size(); }
     const std::vector<Ogre::Viewport*>& getViewports() const { return _vps; }
@@ -24,6 +36,14 @@ public:
     bool removeViewport(int);
     void removeAllViewports();
     void clear();
+
+    bool mouseMoved (const OgreBites::MouseMotionEvent &evt);
+    bool mousePressed (const OgreBites::MouseButtonEvent &evt);
+    bool mouseReleased (const OgreBites::MouseButtonEvent &evt);
+    bool mouseWheelRolled (const OgreBites::MouseWheelEvent &evt);
+    bool touchMoved (const OgreBites::TouchFingerEvent &evt);
+    bool touchPressed (const OgreBites::TouchFingerEvent &evt);
+    bool touchReleased (const OgreBites::TouchFingerEvent &evt);
 
     template<class Ar>
     void load(Ar &ia) {

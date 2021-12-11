@@ -7,6 +7,8 @@
 
 #include <physics/RigidBody.h>
 
+#include "Player.h"
+
 using namespace std;
 
 static const char DefaultSaveName[] {"defaultSave"};
@@ -66,6 +68,7 @@ void Application::setup()
 
     _sim = new Simulation(_sceneMgr);
     _sim->setRenderTarget(getRenderWindow());
+    _pl = _sim->getPlayer();
 
     _imguiOverlay = new Ogre::ImGuiOverlay();
 
@@ -127,7 +130,7 @@ bool Application::mouseMoved (const OgreBites::MouseMotionEvent &evt)
     if (_imguiListener->mouseMoved(evt))
         return true;
 
-    if (_sim->mouseMoved(evt))
+    if (_pl->mouseMoved(evt))
         return true;
 
     return true;
@@ -138,7 +141,7 @@ bool Application::mousePressed (const OgreBites::MouseButtonEvent &evt)
     if (_imguiListener->mousePressed(evt))
         return true;
 
-    if (_sim->mousePressed(evt))
+    if (_pl->mousePressed(evt))
         return true;
 
     return true;
@@ -149,7 +152,7 @@ bool Application::mouseReleased (const OgreBites::MouseButtonEvent &evt)
     if (_imguiListener->mouseReleased(evt))
         return true;
 
-    if (_sim->mouseReleased(evt))
+    if (_pl->mouseReleased(evt))
         return true;
 
     return true;
@@ -160,7 +163,7 @@ bool Application::mouseWheelRolled (const OgreBites::MouseWheelEvent &evt)
     if (_imguiListener->mouseWheelRolled(evt))
         return true;
 
-    if (_sim->mouseWheelRolled(evt))
+    if (_pl->mouseWheelRolled(evt))
         return true;
 
     return true;
@@ -192,7 +195,7 @@ bool Application::touchMoved(const OgreBites::TouchFingerEvent& evt)
     if (_imguiListener->touchMoved(evt))
         return true;
 
-    if (_sim->touchMoved(evt))
+    if (_pl->touchMoved(evt))
         return true;
 
     return true;
@@ -203,7 +206,7 @@ bool Application::touchPressed(const OgreBites::TouchFingerEvent& evt)
     if (_imguiListener->touchPressed(evt))
         return true;
 
-    if (_sim->touchPressed(evt))
+    if (_pl->touchPressed(evt))
         return true;
 
     return true;
@@ -214,7 +217,7 @@ bool Application::touchReleased(const OgreBites::TouchFingerEvent& evt)
     if (_imguiListener->touchReleased(evt))
         return true;
 
-    if (_sim->touchReleased(evt))
+    if (_pl->touchReleased(evt))
         return true;
 
     return true;

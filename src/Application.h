@@ -29,6 +29,7 @@ class Application :  public OgreBites::ApplicationContext, public OgreBites::Inp
     };
     Ogre::SceneManager *_sceneMgr;
     Simulation *_sim;
+    Player *_pl;
     OgreBites::ImGuiInputListener *_imguiListener;
     Ogre::ImGuiOverlay *_imguiOverlay;
     int _frameCounter {0};

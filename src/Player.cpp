@@ -47,4 +47,56 @@ void Player::removeAllViewports() {
 
 void Player::clear() {
     removeAllViewports();
+    deleteCameraMan();
+}
+
+void Player::createCameraMan() {
+    auto *sm = _sim->getSceneManager();
+    auto *node = sm->getRootSceneNode()->createChildSceneNode("3rdPersonCameraNode");
+    _cm = new OgreBites::CameraMan(node);
+}
+
+void Player::restoreCameraMan() {
+    auto *sn = _sim->getSceneManager()->getSceneNode("3rdPersonCameraNode");
+    _cm = new OgreBites::CameraMan(sn);
+}
+
+void Player::deleteCameraMan() {
+    delete _cm;
+    _cm = nullptr;
+}
+
+bool Player::mouseMoved(const OgreBites::MouseMotionEvent &evt) {
+    if (!_cm)  return false;
+    return _cm->mouseMoved(evt);
+}
+
+bool Player::mousePressed(const OgreBites::MouseButtonEvent &evt) {
+    if (!_cm)  return false;
+    return _cm->mousePressed(evt);
+}
+
+bool Player::mouseReleased(const OgreBites::MouseButtonEvent &evt) {
+    if (!_cm)  return false;
+    return _cm->mouseReleased(evt);
+}
+
+bool Player::mouseWheelRolled(const OgreBites::MouseWheelEvent &evt) {
+    if (!_cm)  return false;
+    return _cm->mouseWheelRolled(evt);
+}
+
+bool Player::touchMoved (const OgreBites::TouchFingerEvent &evt) {
+    if (!_cm)  return false;
+    return _cm->touchMoved(evt);
+}
+
+bool Player::touchPressed (const OgreBites::TouchFingerEvent &evt) {
+    if (!_cm)  return false;
+    return _cm->touchPressed(evt);
+}
+
+bool Player::touchReleased (const OgreBites::TouchFingerEvent &evt) {
+    if (!_cm)  return false;
+    return _cm->touchReleased(evt);
 }

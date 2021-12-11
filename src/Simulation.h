@@ -7,18 +7,15 @@
 #include <OgreRoot.h>
 #include <OgreSceneManager.h>
 #include <OgreSceneNode.h>
-#include <OgreInput.h>
-#include <OgreCameraMan.h>
 
 #include <physics/DynamicsWorld.h>
 
 class Player;
 
-class Simulation : public OgreBites::InputListener
+class Simulation
 {
     Ogre::SceneManager *_sceneMgr{nullptr};
     Ogre::RenderTarget *_rt{nullptr};
-    OgreBites::CameraMan *_currentCamMan{nullptr};
     DynamicsWorld _world;
     BtOgre::DebugDrawer *_debugDrawer{nullptr};
     bool _debugDraw{true};
@@ -37,18 +34,8 @@ public:
     Ogre::RenderTarget *getRenderTarget() { return _rt; }
     Ogre::RenderTarget const *getRenderTarget() const { return _rt; }
     void setRenderTarget(Ogre::RenderTarget *rt) { _rt = rt; }
-    OgreBites::CameraMan *getCurrentCameraMan() { return _currentCamMan; }
-    const OgreBites::CameraMan *getCurrentCameraMan() const { return _currentCamMan; }
     Player *getPlayer() { return _pl; }
     Player const *getPlayer() const { return _pl; }
-
-    bool mouseMoved (const OgreBites::MouseMotionEvent &evt);
-    bool mousePressed (const OgreBites::MouseButtonEvent &evt);
-    bool mouseReleased (const OgreBites::MouseButtonEvent &evt);
-    bool mouseWheelRolled (const OgreBites::MouseWheelEvent &evt);
-    bool touchMoved (const OgreBites::TouchFingerEvent &evt);
-    bool touchPressed (const OgreBites::TouchFingerEvent &evt);
-    bool touchReleased (const OgreBites::TouchFingerEvent &evt);
 
     void createDummyVieport();
     void destroyDummyVieport();

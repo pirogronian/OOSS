@@ -35,6 +35,8 @@ void Simulation::populate()
 {
     _empty = false;
 
+    _pl->createCameraMan();
+
     auto *ogreEnt = _sceneMgr->createEntity("ogrehead.mesh");
     auto *ogrenode = _sceneMgr->getRootSceneNode()->createChildSceneNode();
     ogrenode->attachObject(ogreEnt);
@@ -70,48 +72,12 @@ void Simulation::populate()
     auto vp = _pl->addViewport(cam, -1);
     vp->setOverlaysEnabled(false);
 
-    auto *camnode = _sceneMgr->getRootSceneNode()->createChildSceneNode();
-    camnode->attachObject(cam);
+    auto cm = _pl->getCameraMan();
+    cm->getCamera()->attachObject(cam);
 
-    _currentCamMan = new OgreBites::CameraMan(camnode);
-    _currentCamMan->setStyle(OgreBites::CS_ORBIT);
-    _currentCamMan->setYawPitchDist(Ogre::Degree(45), Ogre::Degree(45), 120);
-}
-
-
-bool Simulation::mouseMoved(const OgreBites::MouseMotionEvent &evt) {
-    if (_currentCamMan)  return _currentCamMan->mouseMoved(evt);
-    return false;
-}
-
-bool Simulation::mousePressed(const OgreBites::MouseButtonEvent &evt) {
-    if (_currentCamMan)  return _currentCamMan->mousePressed(evt);
-    return false;
-}
-
-bool Simulation::mouseReleased(const OgreBites::MouseButtonEvent &evt) {
-    if (_currentCamMan)  return _currentCamMan->mouseReleased(evt);
-    return false;
-}
-
-bool Simulation::mouseWheelRolled(const OgreBites::MouseWheelEvent &evt) {
-    if (_currentCamMan)  return _currentCamMan->mouseWheelRolled(evt);
-    return false;
-}
-
-bool Simulation::touchMoved (const OgreBites::TouchFingerEvent &evt) {
-    if (_currentCamMan)  return _currentCamMan->touchMoved(evt);
-    return false;
-}
-
-bool Simulation::touchPressed (const OgreBites::TouchFingerEvent &evt) {
-    if (_currentCamMan)  return _currentCamMan->touchPressed(evt);
-    return false;
-}
-
-bool Simulation::touchReleased (const OgreBites::TouchFingerEvent &evt) {
-    if (_currentCamMan)  return _currentCamMan->touchReleased(evt);
-    return false;
+    cm->setStyle(OgreBites::CS_ORBIT);
+//     cout << __FILE__ << " (" << __LINE__ << ")\n";
+    cm->setYawPitchDist(Ogre::Degree(45), Ogre::Degree(45), 120);
 }
 
 void Simulation::clear()
@@ -163,13 +129,17 @@ bool Simulation::load(const string &name) {
     _sceneMgr->getRootSceneNode()->loadChildren(name + ".scene");
 
     ifstream is(name + ".xml");
-    try {
+    {
+        try {
             cereal::XMLInputArchive ia(is);
             ia(*_pl);
         } catch(cereal::Exception e) {
             cerr << e.what() << endl;
             return false;
         }
+    }
+
+    _pl->restoreCameraMan();
 
     return true;
 }
