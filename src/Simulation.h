@@ -12,7 +12,7 @@
 
 #include <physics/DynamicsWorld.h>
 
-#include "Player.h"
+class Player;
 
 class Simulation : public OgreBites::InputListener
 {
@@ -23,7 +23,7 @@ class Simulation : public OgreBites::InputListener
     BtOgre::DebugDrawer *_debugDrawer{nullptr};
     bool _debugDraw{true};
     bool _empty{true};
-    Player _pl{this};
+    Player *_pl{nullptr};
 public:
     Simulation(Ogre::SceneManager *);
     bool isEmpty() const { return _empty; }
@@ -39,8 +39,8 @@ public:
     void setRenderTarget(Ogre::RenderTarget *rt) { _rt = rt; }
     OgreBites::CameraMan *getCurrentCameraMan() { return _currentCamMan; }
     const OgreBites::CameraMan *getCurrentCameraMan() const { return _currentCamMan; }
-    Player &getPlayer() { return _pl; }
-    const Player &getPlayer() const { return _pl; }
+    Player *getPlayer() { return _pl; }
+    Player const *getPlayer() const { return _pl; }
 
     bool mouseMoved (const OgreBites::MouseMotionEvent &evt);
     bool mousePressed (const OgreBites::MouseButtonEvent &evt);

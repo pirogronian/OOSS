@@ -1,7 +1,11 @@
 
+#include <fstream>
+#include <cereal/archives/xml.hpp>
+
 #include <OgreShaderGenerator.h>
 
 #include "Simulation.h"
+#include "Player.h"
 
 #include <physics/RigidBody.h>
 #include <physics/GravityCenter.h>
@@ -14,6 +18,8 @@ Simulation::Simulation(Ogre::SceneManager *sceneMgr)
     Ogre::RTShader::ShaderGenerator* shadergen = Ogre::RTShader::ShaderGenerator::getSingletonPtr();
     shadergen->addSceneManager(_sceneMgr);
     _debugDrawer = new BtOgre::DebugDrawer(_sceneMgr->getRootSceneNode(), &_world.getBtWorld());
+
+    _pl = new Player(this);
 }
 
 void Simulation::update(double delta)
@@ -61,7 +67,7 @@ void Simulation::populate()
     Ogre::Camera *cam = _sceneMgr->createCamera("TestCamera");
     cam->setNearClipDistance(0.5);
     cam->setAutoAspectRatio(true);
-    auto vp = _pl.addViewport(cam, -1);
+    auto vp = _pl->addViewport(cam, -1);
     vp->setOverlaysEnabled(false);
 
     auto *camnode = _sceneMgr->getRootSceneNode()->createChildSceneNode();
@@ -113,7 +119,7 @@ void Simulation::clear()
     clearGravityCenters(false);
     clearRigidBodies(false);
     _sceneMgr->clearScene();
-    _pl.clear();
+    _pl->clear();
     clearCameras();
 
     // Clearing the scene detaches internal ManualObject, so it has to be attached again.
@@ -155,10 +161,25 @@ void Simulation::clearCameras() {
 
 bool Simulation::load(const string &name) {
     _sceneMgr->getRootSceneNode()->loadChildren(name + ".scene");
+
+    ifstream is(name + ".xml");
+    try {
+            cereal::XMLInputArchive ia(is);
+            ia(*_pl);
+        } catch(cereal::Exception e) {
+            cerr << e.what() << endl;
+            return false;
+        }
+
     return true;
 }
 
 bool Simulation::save(const string &name) const {
     _sceneMgr->getRootSceneNode()->saveChildren(name + ".scene");
+
+    ofstream os(name + ".xml");
+    cereal::XMLOutputArchive oa(os);
+    oa(cereal::make_nvp("Player", *_pl));
+
     return true;
 }

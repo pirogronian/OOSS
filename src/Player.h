@@ -6,7 +6,7 @@
 #include <OgreViewport.h>
 #include <OgreRenderTarget.h>
 
-class Simulation;
+#include "Simulation.h"
 
 class Player {
     Simulation *_sim;
@@ -25,14 +25,35 @@ public:
     void removeAllViewports();
     void clear();
 
-    /*template<class Ar>
+    template<class Ar>
     void load(Ar &ia) {
         int vpn = 0;
         ia(vpn);
         while(vpn) {
+            Ogre::String camname;
             int z = 0;
             Ogre::Real l, t, w, h;
-            
+            ia(camname, z, l, t, w, h);
+            auto *cam = _sim->getSceneManager()->getCamera(camname);
+            if (!cam)  continue;
+            auto *vp = addViewport(cam, z, l, t, w, h);
+            --vpn;
         }
-    }*/
+    }
+
+    template<class Ar>
+    void save(Ar &oa) const {
+        int n = _vps.size();
+        oa(n);
+        for (auto &vp : _vps) {
+            oa(vp->getCamera()->getName());
+            oa(
+                vp->getZOrder(),
+               vp->getLeft(),
+               vp->getTop(),
+               vp->getWidth(),
+               vp->getHeight()
+            );
+        }
+    }
 };
