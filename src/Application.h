@@ -55,7 +55,9 @@ public:
 
     void updateMainMenu();
     void updateSimStatsWindow();
+    void dispatchOperationDialog();
     void newBuiltinSimulationWarningWindow();
+    void loadSimulationWarningWindow();
 
     template<class Archive>
     void serialize(Archive &archv) {
@@ -66,11 +68,11 @@ public:
     void doClearSimulation();
     void doLoadSimulation();
     void doSaveSimulation();
-    
+
     void newBuiltinSimulation();
     void clearSimulation();
     void loadSimulation();
     void saveSimulation();
-    
+
     void closeOperationPopup();
 };

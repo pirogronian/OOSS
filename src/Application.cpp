@@ -108,7 +108,7 @@ bool Application::frameStarted(const Ogre::FrameEvent &evt)
     if (_visibleUI.mainMenu)  updateMainMenu();
     if (_visibleUI.demoWindow)  ImGui::ShowDemoWindow();
     if (_visibleUI.simStats) updateSimStatsWindow();
-    /*if (_visibleUI.populateWarning) */newBuiltinSimulationWarningWindow();
+    dispatchOperationDialog();
 
     _sim->update(evt.timeSinceLastFrame);
 
@@ -259,7 +259,7 @@ void Application::updateMainMenu()
     }
     if (newSimBuiltin)  newBuiltinSimulation();
     if (clearSim) _sim->clear();
-    if (loadSim)  _sim->load(DefaultSaveName);
+    if (loadSim)  loadSimulation();
     if (saveSim)  _sim->save(DefaultSaveName);
     if (quit) getRoot()->queueEndRendering();
 
@@ -285,11 +285,33 @@ void Application::updateSimStatsWindow()
     ImGui::End();
 }
 
+void Application::dispatchOperationDialog() {
+    switch (_currentOp) {
+        case NewBuiltinSimulation : newBuiltinSimulationWarningWindow(); break;
+        case LoadSimulation: loadSimulationWarningWindow(); break;
+        default:
+            ;
+    }
+}
+
 void Application::newBuiltinSimulationWarningWindow() {
     if (ImGui::BeginPopupModal("Simulation not empty!", nullptr/*&_visibleUI.populateWarning*/)) {
         ImGui::Text("Simulation is not empty! Are you sure to proceed?");
         if (ImGui::Button("Yes")) {
             doNewBuiltinSimulation();
+            closeOperationPopup();
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("No")) closeOperationPopup();
+        ImGui::EndPopup();
+    }
+}
+
+void Application::loadSimulationWarningWindow() {
+    if (ImGui::BeginPopupModal("Simulation not empty!", nullptr/*&_visibleUI.populateWarning*/)) {
+        ImGui::Text("Simulation is not empty! Are you sure to proceed?");
+        if (ImGui::Button("Yes")) {
+            doLoadSimulation();
             closeOperationPopup();
         }
         ImGui::SameLine();
@@ -321,6 +343,16 @@ void Application::newBuiltinSimulation() {
         return;
     }
     _currentOp = NewBuiltinSimulation;
+    ImGui::OpenPopup("Simulation not empty!");
+}
+
+void Application::loadSimulation() {
+    if (_currentOp != NoOperation)  return;
+    if (_sim->isEmpty()) {
+        doLoadSimulation();
+        return;
+    }
+    _currentOp = LoadSimulation;
     ImGui::OpenPopup("Simulation not empty!");
 }
 

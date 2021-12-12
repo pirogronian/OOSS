@@ -134,6 +134,7 @@ void Simulation::clearCameras() {
 
 bool Simulation::load(const string &name) {
     _sceneMgr->getRootSceneNode()->loadChildren(name + ".scene");
+    _empty = false;
 
     ifstream is(name + ".xml");
     {
