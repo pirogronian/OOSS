@@ -11,6 +11,14 @@
 #include <physics/GravityCenter.h>
 
 using namespace std;
+using namespace Ogre;
+
+namespace cereal {
+template<class Ar>
+void serialize(Ar &a, Ogre::ColourValue &cv) {
+    a(cv.r, cv.g, cv.b, cv.a);
+}
+}
 
 Simulation::Simulation(Ogre::SceneManager *sceneMgr)
 {
@@ -133,6 +141,9 @@ bool Simulation::load(const string &name) {
         try {
             cereal::XMLInputArchive ia(is);
             ia(*_pl);
+            ColourValue al;
+            ia(al);
+            _sceneMgr->setAmbientLight(al);
         } catch(cereal::Exception e) {
             cerr << e.what() << endl;
             return false;
@@ -150,6 +161,8 @@ bool Simulation::save(const string &name) const {
     ofstream os(name + ".xml");
     cereal::XMLOutputArchive oa(os);
     oa(cereal::make_nvp("Player", *_pl));
+    ColourValue al = _sceneMgr->getAmbientLight();
+    oa(cereal::make_nvp("AmbientLight", al));
 
     return true;
 }
