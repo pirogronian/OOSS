@@ -23,9 +23,8 @@ public:
     Ogre::RenderTarget *getRenderTarget();
     const Ogre::RenderTarget *getRenderTarget() const;
 
-    void createCameraMan();
+    void createCameraMan(OgreBites::CameraStyle = OgreBites::CS_FREELOOK, Ogre::SceneNode* = nullptr);
     void deleteCameraMan();
-    void restoreCameraMan();
     OgreBites::CameraMan *getCameraMan() { return _cm; }
     OgreBites::CameraMan const *getCameraMan() const { return _cm; }
 
@@ -59,6 +58,14 @@ public:
             auto *vp = addViewport(cam, z, l, t, w, h);
             --vpn;
         }
+        {
+            deleteCameraMan();
+            Ogre::String name;
+            OgreBites::CameraStyle cs;
+            ia(name);
+            ia(cs);
+            createCameraMan(cs, _sim->getSceneManager()->getSceneNode(name));
+        }
     }
 
     template<class Ar>
@@ -74,6 +81,12 @@ public:
                vp->getWidth(),
                vp->getHeight()
             );
+        }
+        {
+            auto name = _cm->getCamera()->getName();
+            auto cs = _cm->getStyle();
+            oa(name);
+            oa(cs);
         }
     }
 };

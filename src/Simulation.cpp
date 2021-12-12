@@ -42,8 +42,7 @@ void Simulation::update(double delta)
 void Simulation::populate()
 {
     _empty = false;
-
-    _pl->createCameraMan();
+    if (!_pl->getCameraMan())  _pl->createCameraMan();
 
     auto *ogreEnt = _sceneMgr->createEntity("ogrehead.mesh");
     auto *ogrenode = _sceneMgr->getRootSceneNode()->createChildSceneNode();
@@ -150,12 +149,11 @@ bool Simulation::load(const string &name) {
         }
     }
 
-    _pl->restoreCameraMan();
-
     return true;
 }
 
 bool Simulation::save(const string &name) const {
+    if (_empty)  return false;
     _sceneMgr->getRootSceneNode()->saveChildren(name + ".scene");
 
     ofstream os(name + ".xml");

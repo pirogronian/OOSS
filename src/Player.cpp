@@ -50,15 +50,17 @@ void Player::clear() {
     deleteCameraMan();
 }
 
-void Player::createCameraMan() {
-    auto *sm = _sim->getSceneManager();
-    auto *node = sm->getRootSceneNode()->createChildSceneNode("3rdPersonCameraNode");
-    _cm = new OgreBites::CameraMan(node);
-}
-
-void Player::restoreCameraMan() {
-    auto *sn = _sim->getSceneManager()->getSceneNode("3rdPersonCameraNode");
+void Player::createCameraMan(OgreBites::CameraStyle cs, Ogre::SceneNode* sn) {
+    if (!sn) {
+        cout << "Player::createCameraMan: camera node not provided, searching for default...\n";
+        auto *sm = _sim->getSceneManager();
+        sn = sm->getSceneNode("3rdPersonCameraNode", false);
+        cout << "Player::createCameraMan: default camera node not found, creating...\n";
+        if (!sn) sn = sm->getRootSceneNode()->createChildSceneNode("3rdPersonCameraNode");
+        assert(sn);
+    }
     _cm = new OgreBites::CameraMan(sn);
+    _cm->setStyle(cs);
 }
 
 void Player::deleteCameraMan() {
