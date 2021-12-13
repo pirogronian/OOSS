@@ -311,7 +311,11 @@ void Application::simulationNotEmptyModalDialog() {
 }
 
 void Application::doNewBuiltinSimulation() {
-    _sim->populate();
+    try {
+        _sim->populate();
+    } catch (Ogre::ItemIdentityException e) {
+        cout << e.what() << endl;
+    }
 }
 
 void Application::doClearSimulation() {
@@ -319,7 +323,11 @@ void Application::doClearSimulation() {
 }
 
 void Application::doLoadSimulation() {
-    _sim->load(DefaultSaveName);
+    try {
+        _sim->load(DefaultSaveName);
+    } catch (Ogre::ItemIdentityException e) {
+        cout << e.what() << endl;
+    }
 }
 
 void Application::doSaveSimulation() {
