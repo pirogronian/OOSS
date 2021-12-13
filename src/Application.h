@@ -80,4 +80,7 @@ public:
     void saveSimulation();
 
     void closeOperationPopup();
+
+    Ogre::String getSaveSubdirName() const { return "saves"; }
+    Ogre::String getSavePath(bool = true);
 };

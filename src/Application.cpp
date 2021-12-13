@@ -10,6 +10,7 @@
 #include "Player.h"
 
 using namespace std;
+using namespace Ogre;
 
 static const char DefaultSaveName[] {"defaultSave"};
 
@@ -262,7 +263,7 @@ void Application::updateMainMenu()
     if (newSimBuiltin)  newBuiltinSimulation();
     if (clearSim) _sim->clear();
     if (loadSim)  loadSimulation();
-    if (saveSim)  _sim->save(DefaultSaveName);
+    if (saveSim)  doSaveSimulation();
     if (quit) getRoot()->queueEndRendering();
 
     _sceneMgr->setDisplaySceneNodes(showNodes);
@@ -324,14 +325,16 @@ void Application::doClearSimulation() {
 
 void Application::doLoadSimulation() {
     try {
-        _sim->load(DefaultSaveName);
+        String path = getSavePath();
+        _sim->load(path + DefaultSaveName);
     } catch (Ogre::ItemIdentityException e) {
         cout << e.what() << endl;
     }
 }
 
 void Application::doSaveSimulation() {
-    _sim->save(DefaultSaveName);
+    String path = getSavePath();
+    _sim->save(path + DefaultSaveName);
 }
 
 void Application::newBuiltinSimulation() {
@@ -359,4 +362,10 @@ void Application::loadSimulation() {
 void Application::closeOperationPopup() {
     ImGui::CloseCurrentPopup();
     _co = NoOperation;
+}
+
+String Application::getSavePath(bool create) {
+    auto path = getSaveSubdirName() + "/";
+    if (create)  FileSystemLayer::createDirectory(path);
+    return path;
 }
