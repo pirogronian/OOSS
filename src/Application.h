@@ -17,6 +17,10 @@ class Application :  public OgreBites::ApplicationContext, public OgreBites::Inp
         LoadSimulation,
         SaveSimulation
     };
+    enum ModalDialog {
+        NoDialog = 0,
+        SimulationNotEmpty
+    };
     struct VisibleUI {
         bool demoWindow {false};
         bool mainMenu {true};
@@ -34,7 +38,8 @@ class Application :  public OgreBites::ApplicationContext, public OgreBites::Inp
     Ogre::ImGuiOverlay *_imguiOverlay;
     int _frameCounter {0};
     int _frameLimit{-1};
-    Operations _currentOp{Operations::NoOperation};
+    Operations _co{Operations::NoOperation};
+    ModalDialog _md {ModalDialog::NoDialog};
     VisibleUI _visibleUI;
 public:
     Application();
@@ -55,9 +60,9 @@ public:
 
     void updateMainMenu();
     void updateSimStatsWindow();
-    void dispatchOperationDialog();
-    void newBuiltinSimulationWarningWindow();
-    void loadSimulationWarningWindow();
+
+    void dispatchModalDialog();
+    void simulationNotEmptyModalDialog();
 
     template<class Archive>
     void serialize(Archive &archv) {

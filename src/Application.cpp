@@ -13,6 +13,8 @@ using namespace std;
 
 static const char DefaultSaveName[] {"defaultSave"};
 
+static const char *ModalDialogCaption[] { "", "Simulation not empty!" };
+
 class RTL : public Ogre::RenderTargetListener {
     Ogre::Viewport *_vp{nullptr};
     Ogre::SceneManager *_sceneMgr{nullptr};
@@ -108,7 +110,7 @@ bool Application::frameStarted(const Ogre::FrameEvent &evt)
     if (_visibleUI.mainMenu)  updateMainMenu();
     if (_visibleUI.demoWindow)  ImGui::ShowDemoWindow();
     if (_visibleUI.simStats) updateSimStatsWindow();
-    dispatchOperationDialog();
+    dispatchModalDialog();
 
     _sim->update(evt.timeSinceLastFrame);
 
@@ -285,39 +287,27 @@ void Application::updateSimStatsWindow()
     ImGui::End();
 }
 
-void Application::dispatchOperationDialog() {
-    switch (_currentOp) {
-        case NewBuiltinSimulation : newBuiltinSimulationWarningWindow(); break;
-        case LoadSimulation: loadSimulationWarningWindow(); break;
-        default:
-            ;
-    }
-}
-
-void Application::newBuiltinSimulationWarningWindow() {
-    if (ImGui::BeginPopupModal("Simulation not empty!", nullptr/*&_visibleUI.populateWarning*/)) {
-        ImGui::Text("Simulation is not empty! Are you sure to proceed?");
-        if (ImGui::Button("Yes")) {
-            doNewBuiltinSimulation();
-            closeOperationPopup();
+void Application::dispatchModalDialog() {
+    if (_md == NoDialog)  return;
+    if (ImGui::BeginPopupModal(ModalDialogCaption[_md])) {
+        switch (_md) {
+            case SimulationNotEmpty: simulationNotEmptyModalDialog(); break;
+            default:
+                assert("Unknown modal dialog to dispatch!");
         }
-        ImGui::SameLine();
-        if (ImGui::Button("No")) closeOperationPopup();
         ImGui::EndPopup();
     }
 }
 
-void Application::loadSimulationWarningWindow() {
-    if (ImGui::BeginPopupModal("Simulation not empty!", nullptr/*&_visibleUI.populateWarning*/)) {
-        ImGui::Text("Simulation is not empty! Are you sure to proceed?");
-        if (ImGui::Button("Yes")) {
-            doLoadSimulation();
-            closeOperationPopup();
-        }
-        ImGui::SameLine();
-        if (ImGui::Button("No")) closeOperationPopup();
-        ImGui::EndPopup();
+void Application::simulationNotEmptyModalDialog() {
+    ImGui::Text("Simulation is not empty! Are you sure to proceed?");
+    if (ImGui::Button("Yes")) {
+        if (_co == NewBuiltinSimulation)  doNewBuiltinSimulation();
+        if (_co == LoadSimulation)  doLoadSimulation();
+        closeOperationPopup();
     }
+    ImGui::SameLine();
+    if (ImGui::Button("No")) closeOperationPopup();
 }
 
 void Application::doNewBuiltinSimulation() {
@@ -337,26 +327,28 @@ void Application::doSaveSimulation() {
 }
 
 void Application::newBuiltinSimulation() {
-    if (_currentOp != NoOperation)  return;
+    if (_co != NoOperation) { assert("Another operation in progress!"); return; }
     if (_sim->isEmpty()) {
         doNewBuiltinSimulation();
         return;
     }
-    _currentOp = NewBuiltinSimulation;
-    ImGui::OpenPopup("Simulation not empty!");
+    _co = NewBuiltinSimulation;
+    _md = SimulationNotEmpty;
+    ImGui::OpenPopup(ModalDialogCaption[SimulationNotEmpty]);
 }
 
 void Application::loadSimulation() {
-    if (_currentOp != NoOperation)  return;
+    if (_co != NoOperation) { assert("Another operation in progress!"); return; }
     if (_sim->isEmpty()) {
         doLoadSimulation();
         return;
     }
-    _currentOp = LoadSimulation;
-    ImGui::OpenPopup("Simulation not empty!");
+    _co = LoadSimulation;
+    _md = SimulationNotEmpty;
+    ImGui::OpenPopup(ModalDialogCaption[SimulationNotEmpty]);
 }
 
 void Application::closeOperationPopup() {
     ImGui::CloseCurrentPopup();
-    _currentOp = NoOperation;
+    _co = NoOperation;
 }
