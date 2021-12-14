@@ -6,6 +6,7 @@
 
 #include <cereal/archives/xml.hpp>
 
+#include "SubModule.h"
 #include <Simulation.h>
 
 class Application :  public OgreBites::ApplicationContext, public OgreBites::InputListener
@@ -20,6 +21,13 @@ class Application :  public OgreBites::ApplicationContext, public OgreBites::Inp
     enum ModalDialog {
         NoDialog = 0,
         SimulationNotEmpty
+    };
+    enum SubModules {
+        DummyModule = 0,
+        NewSimulationModule = 1,
+        LoadSimulationModule = 2,
+        SaveSimulationModule = 3,
+        MaxModulesNumber
     };
     struct VisibleUI {
         bool demoWindow {false};
@@ -36,6 +44,7 @@ class Application :  public OgreBites::ApplicationContext, public OgreBites::Inp
     Player *_pl;
     OgreBites::ImGuiInputListener *_imguiListener;
     Ogre::ImGuiOverlay *_imguiOverlay;
+    SubModuleManager _smm{MaxModulesNumber};
     int _frameCounter {0};
     int _frameLimit{-1};
     Operations _co{Operations::NoOperation};
@@ -47,7 +56,7 @@ public:
     void shutdown();
     bool frameStarted(const Ogre::FrameEvent &);
 //     bool frameEnded(const Ogre::FrameEvent &);
-//     void frameRendered (const Ogre::FrameEvent &evt)
+    void frameRendered (const Ogre::FrameEvent &evt);
     bool keyPressed (const OgreBites::KeyboardEvent &evt);
     bool keyReleased (const OgreBites::KeyboardEvent &evt);
     bool mouseMoved (const OgreBites::MouseMotionEvent &evt);

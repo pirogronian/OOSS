@@ -61,6 +61,8 @@ target_sources(OOSS PRIVATE
     ${IMGUI_SRCS}
     Application.h
     Application.cpp
+    SubModule.h
+    SubModule.cpp
     Simulation.h
     Simulation.cpp
     Player.h

@@ -128,6 +128,10 @@ bool Application::frameStarted(const Ogre::FrameEvent &evt)
     return true;
 }*/ 
 
+void Application::frameRendered(const FrameEvent &e) {
+    return _smm.frameRendered(e);
+}
+
 bool Application::mouseMoved (const OgreBites::MouseMotionEvent &evt)
 {
     if (_imguiListener->mouseMoved(evt))
@@ -136,7 +140,7 @@ bool Application::mouseMoved (const OgreBites::MouseMotionEvent &evt)
     if (_pl->mouseMoved(evt))
         return true;
 
-    return true;
+    return _smm.mouseMoved(evt);
 }
 
 bool Application::mousePressed (const OgreBites::MouseButtonEvent &evt)
@@ -147,7 +151,7 @@ bool Application::mousePressed (const OgreBites::MouseButtonEvent &evt)
     if (_pl->mousePressed(evt))
         return true;
 
-    return true;
+    return _smm.mousePressed(evt);
 }
 
 bool Application::mouseReleased (const OgreBites::MouseButtonEvent &evt)
@@ -158,7 +162,7 @@ bool Application::mouseReleased (const OgreBites::MouseButtonEvent &evt)
     if (_pl->mouseReleased(evt))
         return true;
 
-    return true;
+    return _smm.mouseReleased(evt);
 }
 
 bool Application::mouseWheelRolled (const OgreBites::MouseWheelEvent &evt)
@@ -169,7 +173,7 @@ bool Application::mouseWheelRolled (const OgreBites::MouseWheelEvent &evt)
     if (_pl->mouseWheelRolled(evt))
         return true;
 
-    return true;
+    return _smm.mouseWheelRolled(evt);
 }
 
 bool Application::keyPressed(const OgreBites::KeyboardEvent& evt)
@@ -182,7 +186,7 @@ bool Application::keyPressed(const OgreBites::KeyboardEvent& evt)
     if (_imguiListener->keyReleased(evt))
         return true;
 
-    return true;
+    return _smm.keyPressed(evt);
 }
 
 bool Application::keyReleased(const OgreBites::KeyboardEvent& evt)
@@ -190,7 +194,7 @@ bool Application::keyReleased(const OgreBites::KeyboardEvent& evt)
     if (_imguiListener->keyReleased(evt))
         return true;
 
-    return true;
+    return _smm.keyReleased(evt);
 }
 
 bool Application::touchMoved(const OgreBites::TouchFingerEvent& evt)
@@ -201,7 +205,7 @@ bool Application::touchMoved(const OgreBites::TouchFingerEvent& evt)
     if (_pl->touchMoved(evt))
         return true;
 
-    return true;
+    return _smm.touchMoved(evt);
 }
 
 bool Application::touchPressed(const OgreBites::TouchFingerEvent& evt)
@@ -212,7 +216,7 @@ bool Application::touchPressed(const OgreBites::TouchFingerEvent& evt)
     if (_pl->touchPressed(evt))
         return true;
 
-    return true;
+    return _smm.touchPressed(evt);
 }
 
 bool Application::touchReleased(const OgreBites::TouchFingerEvent& evt)
@@ -223,7 +227,7 @@ bool Application::touchReleased(const OgreBites::TouchFingerEvent& evt)
     if (_pl->touchReleased(evt))
         return true;
 
-    return true;
+    return _smm.touchReleased(evt);
 }
 
 void Application::updateMainMenu()
