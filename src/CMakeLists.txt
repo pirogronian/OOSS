@@ -57,14 +57,8 @@ set(IMGUI_SRCS
         #${CMAKE_CURRENT_SOURCE_DIR}/imgui/misc/
 )
 
-set(OGRE_IMGUI_SRCS
-    ${CMAKE_CURRENT_SOURCE_DIR}/ogre-imgui/ImguiManager.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/ogre-imgui/ImguiManager.cpp
-)
-
 target_sources(OOSS PRIVATE
     ${IMGUI_SRCS}
-    ${OGRE_IMGUI_SRCS}
     Application.h
     Application.cpp
     Simulation.h
