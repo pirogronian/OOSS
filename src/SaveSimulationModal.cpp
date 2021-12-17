@@ -20,9 +20,16 @@ bool SaveSimulationModal::frameStarted(const Ogre::FrameEvent &e) {
         for (auto const &p : _flist.getEntries()) {
             ImGui::Text(p.first.data());
         }
+        ImGui::Separator();
+        ImGui::Text(_chosen.data());
+        ImGui::Separator();
         if (ImGui::Button("Ok")) {
             ImGui::CloseCurrentPopup();
             _active = false;
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("Refresh")) {
+            _flist.refresh();
         }
         ImGui::EndPopup();
     }
