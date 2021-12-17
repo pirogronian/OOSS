@@ -10,6 +10,7 @@
 #include "Player.h"
 
 #include "NewSimulationModal.h"
+#include "SaveSimulationModal.h"
 
 using namespace std;
 using namespace Ogre;
@@ -245,6 +246,7 @@ void Application::updateMainMenu()
     bool clearSim {false};
     bool loadSim {false};
     bool saveSim {false};
+    bool saveSimSlot {false};
 
     bool showNodes = _sceneMgr->getDisplaySceneNodes();
     bool showBboxes = _sceneMgr->getShowBoundingBoxes();
@@ -260,6 +262,7 @@ void Application::updateMainMenu()
             ImGui::MenuItem("Clear", "", &clearSim);
             ImGui::MenuItem("Load", "", &loadSim);
             ImGui::MenuItem("Save", "", &saveSim);
+            ImGui::MenuItem("Save to", "", &saveSimSlot);
             ImGui::EndMenu();
         }
         if (ImGui::BeginMenu("View")) {
@@ -276,6 +279,7 @@ void Application::updateMainMenu()
     if (clearSim) _sim->clear();
     if (loadSim)  loadSimulation();
     if (saveSim)  doSaveSimulation();
+    if (saveSimSlot) saveSimulationSlot();
     if (quit) getRoot()->queueEndRendering();
 
     _sceneMgr->setDisplaySceneNodes(showNodes);
@@ -360,9 +364,9 @@ void Application::doSaveSimulation() {
 //     ImGui::OpenPopup(ModalDialogCaption[SimulationNotEmpty]);
 // }
 void Application::newBuiltinSimulation() {
-        if (_sim->isEmpty())  _sim->populate();
-        else _mdp = new NewSimulationModal(_sim);
-    }
+    if (_sim->isEmpty())  _sim->populate();
+    else _mdp = new NewSimulationModal(_sim);
+}
 
 void Application::loadSimulation() {
     if (_co != NoOperation) { assert("Another operation in progress!"); return; }
@@ -373,6 +377,10 @@ void Application::loadSimulation() {
     _co = LoadSimulation;
     _md = SimulationNotEmpty;
     ImGui::OpenPopup(ModalDialogCaption[SimulationNotEmpty]);
+}
+
+void Application::saveSimulationSlot() {
+    _mdp = new SaveSimulationModal(getSavePath(), _sim);
 }
 
 void Application::closeOperationPopup() {

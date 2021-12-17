@@ -69,6 +69,8 @@ target_sources(OOSS PRIVATE
     Player.cpp
     NewSimulationModal.h
     NewSimulationModal.cpp
+    SaveSimulationModal.h
+    SaveSimulationModal.cpp
     physics/physics.h
     physics/physics.cpp
     physics/BtOgre.h
@@ -81,6 +83,8 @@ target_sources(OOSS PRIVATE
     physics/DynamicsWorld.cpp
     utils/DumpHelper.h
     utils/DumpHelper.cpp
+    utils/FileList.h
+    utils/FileList.cpp
     main.cpp
 )
 

@@ -88,6 +88,7 @@ public:
     void clearSimulation();
     void loadSimulation();
     void saveSimulation();
+    void saveSimulationSlot();
 
     void closeOperationPopup();
 

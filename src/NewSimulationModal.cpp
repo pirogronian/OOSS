@@ -12,16 +12,19 @@ NewSimulationModal::NewSimulationModal(Simulation *s) : _sim(s) {
 }
 
 bool NewSimulationModal::frameStarted(const FrameEvent &e) {
-    ImGui::Text("Simulation is not empty! Are you sure to load new simulation?");
-    if (ImGui::Button("Yes")) {
-        _active = false;
-        ImGui::CloseCurrentPopup();
-        _sim->populate();
-    }
-    ImGui::SameLine();
-    if (ImGui::Button("No")) {
-        ImGui::CloseCurrentPopup();
-        _active = false;
+    if (ImGui::BeginPopupModal("Simulation not empty")) {
+        ImGui::Text("Simulation is not empty! Are you sure to load new simulation?");
+        if (ImGui::Button("Yes")) {
+            _active = false;
+            ImGui::CloseCurrentPopup();
+            _sim->populate();
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("No")) {
+            ImGui::CloseCurrentPopup();
+            _active = false;
+        }
+        ImGui::EndPopup();
     }
     return true;
 }
