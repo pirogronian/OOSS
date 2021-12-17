@@ -364,6 +364,7 @@ void Application::doSaveSimulation() {
 //     ImGui::OpenPopup(ModalDialogCaption[SimulationNotEmpty]);
 // }
 void Application::newBuiltinSimulation() {
+    assert(_mdp == nullptr);
     if (_sim->isEmpty())  _sim->populate();
     else _mdp = new NewSimulationModal(_sim);
 }
@@ -380,6 +381,7 @@ void Application::loadSimulation() {
 }
 
 void Application::saveSimulationSlot() {
+    assert(_mdp == nullptr);
     _mdp = new SaveSimulationModal(getSavePath(), _sim);
 }
 

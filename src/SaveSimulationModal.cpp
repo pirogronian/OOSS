@@ -1,4 +1,5 @@
 
+#include <iostream>
 #include <imgui/imgui.h>
 
 #include "SaveSimulationModal.h"
@@ -18,12 +19,15 @@ bool SaveSimulationModal::frameStarted(const Ogre::FrameEvent &e) {
     if (ImGui::BeginPopupModal("Choose save slot")) {
         ImGui::Text(_flist.path.string().data());
         for (auto const &p : _flist.getEntries()) {
-            ImGui::Text(p.first.data());
+            if (ImGui::Selectable(p.first.data())) {
+                _chosen = p.first;
+            }
         }
         ImGui::Separator();
         ImGui::Text(_chosen.data());
         ImGui::Separator();
         if (ImGui::Button("Ok")) {
+            cout << "SaveSimulationModal::Ok\n";
             ImGui::CloseCurrentPopup();
             _active = false;
         }
