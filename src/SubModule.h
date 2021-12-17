@@ -6,10 +6,12 @@
 #include <OgreInput.h>
 
 class SubModule : public OgreBites::InputListener {
+protected:
     bool _active {false};
 public:
     bool isActive() const { return _active; }
     virtual void setActive(bool a) { _active = a; }
+    virtual bool frameStarted(const Ogre::FrameEvent &);
 };
 
 class SubModuleManager : public OgreBites::InputListener {
@@ -24,6 +26,7 @@ public:
     bool axisMoved(const OgreBites::AxisEvent &);
     bool buttonPressed(const OgreBites::ButtonEvent &);
     bool buttonReleased(const OgreBites::ButtonEvent &);
+    virtual bool frameStarted(const Ogre::FrameEvent &);
     void frameRendered(const Ogre::FrameEvent &);
     bool keyPressed(const OgreBites::KeyboardEvent &);
     bool keyReleased(const OgreBites::KeyboardEvent &);

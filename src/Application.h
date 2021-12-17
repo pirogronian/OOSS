@@ -45,6 +45,7 @@ class Application :  public OgreBites::ApplicationContext, public OgreBites::Inp
     OgreBites::ImGuiInputListener *_imguiListener;
     Ogre::ImGuiOverlay *_imguiOverlay;
     SubModuleManager _smm{MaxModulesNumber};
+    SubModule *_mdp{nullptr};
     int _frameCounter {0};
     int _frameLimit{-1};
     Operations _co{Operations::NoOperation};

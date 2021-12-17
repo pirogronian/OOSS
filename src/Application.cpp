@@ -9,6 +9,8 @@
 
 #include "Player.h"
 
+#include "NewSimulationModal.h"
+
 using namespace std;
 using namespace Ogre;
 
@@ -113,6 +115,12 @@ bool Application::frameStarted(const Ogre::FrameEvent &evt)
     if (_visibleUI.simStats) updateSimStatsWindow();
     dispatchModalDialog();
 
+    if (_mdp)
+        if (_mdp->isActive())  _mdp->frameStarted(evt);
+    else {
+        delete _mdp;
+        _mdp = nullptr;
+    }
     _sim->update(evt.timeSinceLastFrame);
 
     ++_frameCounter;
@@ -341,16 +349,20 @@ void Application::doSaveSimulation() {
     _sim->save(path + DefaultSaveName);
 }
 
+// void Application::newBuiltinSimulation() {
+//     if (_co != NoOperation) { assert("Another operation in progress!"); return; }
+//     if (_sim->isEmpty()) {
+//         doNewBuiltinSimulation();
+//         return;
+//     }
+//     _co = NewBuiltinSimulation;
+//     _md = SimulationNotEmpty;
+//     ImGui::OpenPopup(ModalDialogCaption[SimulationNotEmpty]);
+// }
 void Application::newBuiltinSimulation() {
-    if (_co != NoOperation) { assert("Another operation in progress!"); return; }
-    if (_sim->isEmpty()) {
-        doNewBuiltinSimulation();
-        return;
+        if (_sim->isEmpty())  _sim->populate();
+        else _mdp = new NewSimulationModal(_sim);
     }
-    _co = NewBuiltinSimulation;
-    _md = SimulationNotEmpty;
-    ImGui::OpenPopup(ModalDialogCaption[SimulationNotEmpty]);
-}
 
 void Application::loadSimulation() {
     if (_co != NoOperation) { assert("Another operation in progress!"); return; }

@@ -4,6 +4,8 @@
 using namespace Ogre;
 using namespace OgreBites;
 
+bool SubModule::frameStarted(const FrameEvent&) { return false; }
+
 #define EventHandler(eh, et) \
 bool SubModuleManager::eh(const et &e) { \
     for (auto *sm : _v) { \
@@ -22,6 +24,7 @@ void SubModuleManager::frameRendered(const FrameEvent &e) {
     }
 }
 
+EventHandler(frameStarted, FrameEvent)
 EventHandler(axisMoved, AxisEvent)
 EventHandler(buttonPressed, ButtonEvent)
 EventHandler(buttonReleased, ButtonEvent)
