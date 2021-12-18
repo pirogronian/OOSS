@@ -132,12 +132,21 @@ void Simulation::clearCameras() {
     }
 }
 
-bool Simulation::load(const string &name) {
+bool Simulation::load(const filesystem::path &name) {
     cout << "Simulation::load(" << name << ")\n";
-    _sceneMgr->getRootSceneNode()->loadChildren(name + ".scene");
+    if (!filesystem::is_directory(name)) {
+        cout << "Slot not exists, exiting!\n";
+        return false;
+    }
+    auto sceneFile = name / "scene.scene";
+    if (!filesystem::is_regular_file(sceneFile)) {
+        cout << "Scene file doesn not exists, exiting!\n";
+        return false;
+    }
+    _sceneMgr->getRootSceneNode()->loadChildren(sceneFile);
     _empty = false;
 
-    ifstream is(name + ".xml");
+    ifstream is(name / "simulation.xml");
     {
         try {
             cereal::XMLInputArchive ia(is);
@@ -154,12 +163,19 @@ bool Simulation::load(const string &name) {
     return true;
 }
 
-bool Simulation::save(const string &name) const {
+bool Simulation::save(const filesystem::path &name) const {
     cout << "Simulation::save(" << name << ")\n";
+    if (!filesystem::is_directory(name)) {
+        cout << "Slot not exists, creating!\n";
+        if (!filesystem::create_directories(name)) {
+            cout << "Creating slot failed, exiting!\n";
+            return false;
+        }
+    }
     if (_empty)  return false;
-    _sceneMgr->getRootSceneNode()->saveChildren(name + ".scene");
+    _sceneMgr->getRootSceneNode()->saveChildren(name / "scene.scene");
 
-    ofstream os(name + ".xml");
+    ofstream os(name / "simulation.xml");
     cereal::XMLOutputArchive oa(os);
     oa(cereal::make_nvp("Player", *_pl));
     ColourValue al = _sceneMgr->getAmbientLight();

@@ -3,6 +3,7 @@
 
 #include <set>
 #include <string>
+#include <filesystem>
 
 #include <OgreRoot.h>
 #include <OgreSceneManager.h>
@@ -45,6 +46,6 @@ public:
     void clearGravityCenters(bool);
     void clearCameras();
 
-    bool load(const std::string &);
-    bool save(const std::string &) const;
+    bool load(const std::filesystem::path &);
+    bool save(const std::filesystem::path &) const;
 };
