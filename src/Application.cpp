@@ -14,6 +14,7 @@
 
 using namespace std;
 using namespace Ogre;
+using namespace OgreBites;
 
 static const char DefaultSaveName[] {"defaultSave"};
 
@@ -108,6 +109,7 @@ void Application::shutdown()
 bool Application::frameStarted(const Ogre::FrameEvent &evt)
 {
     OgreBites::ApplicationContext::frameStarted(evt);
+//     pollEvents();
 
     Ogre::ImGuiOverlay::NewFrame();
 
@@ -139,6 +141,12 @@ bool Application::frameStarted(const Ogre::FrameEvent &evt)
 
 void Application::frameRendered(const FrameEvent &e) {
     return _smm.frameRendered(e);
+}
+
+bool Application::textInput(const TextInputEvent &e) {
+    if (_imguiListener->textInput(e))  return true;
+
+    return _smm.textInput(e);
 }
 
 bool Application::mouseMoved (const OgreBites::MouseMotionEvent &evt)

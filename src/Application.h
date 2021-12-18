@@ -57,16 +57,17 @@ public:
     void shutdown();
     bool frameStarted(const Ogre::FrameEvent &);
 //     bool frameEnded(const Ogre::FrameEvent &);
-    void frameRendered (const Ogre::FrameEvent &evt);
-    bool keyPressed (const OgreBites::KeyboardEvent &evt);
-    bool keyReleased (const OgreBites::KeyboardEvent &evt);
-    bool mouseMoved (const OgreBites::MouseMotionEvent &evt);
-    bool mousePressed (const OgreBites::MouseButtonEvent &evt);
-    bool mouseReleased (const OgreBites::MouseButtonEvent &evt);
-    bool mouseWheelRolled (const OgreBites::MouseWheelEvent &evt);
-    bool touchMoved (const OgreBites::TouchFingerEvent &evt);
-    bool touchPressed (const OgreBites::TouchFingerEvent &evt);
-    bool touchReleased (const OgreBites::TouchFingerEvent &evt);
+    void frameRendered (const Ogre::FrameEvent &);
+    bool textInput(const OgreBites::TextInputEvent &);
+    bool keyPressed (const OgreBites::KeyboardEvent &);
+    bool keyReleased (const OgreBites::KeyboardEvent &);
+    bool mouseMoved (const OgreBites::MouseMotionEvent &);
+    bool mousePressed (const OgreBites::MouseButtonEvent &);
+    bool mouseReleased (const OgreBites::MouseButtonEvent &);
+    bool mouseWheelRolled (const OgreBites::MouseWheelEvent &);
+    bool touchMoved (const OgreBites::TouchFingerEvent &);
+    bool touchPressed (const OgreBites::TouchFingerEvent &);
+    bool touchReleased (const OgreBites::TouchFingerEvent &);
 
     void updateMainMenu();
     void updateSimStatsWindow();

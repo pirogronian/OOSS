@@ -12,28 +12,38 @@ SaveSimulationModal::SaveSimulationModal(const path& p, Simulation *s) : _sim(s)
     _flist.dir = true;
     _flist.refresh();
     _active = true;
+    _chosen.reserve(1024);
     ImGui::OpenPopup("Choose save slot");
 }
 
 bool SaveSimulationModal::frameStarted(const Ogre::FrameEvent &e) {
     if (ImGui::BeginPopupModal("Choose save slot")) {
         ImGui::Text(_flist.path.string().data());
+        if (ImGui::Button("Refresh")) {
+            _flist.refresh();
+        }
         for (auto const &p : _flist.getEntries()) {
-            if (ImGui::Selectable(p.first.data())) {
+            if (ImGui::Selectable(p.first.data(), false, ImGuiSelectableFlags_DontClosePopups)) {
                 _chosen = p.first;
             }
         }
         ImGui::Separator();
         ImGui::Text(_chosen.data());
+        if (ImGui::InputText("SlotName", _chosen.data(), 1024, ImGuiInputTextFlags_EnterReturnsTrue)) {
+            _sim->save(_flist.path.string() + _chosen);
+            ImGui::CloseCurrentPopup();
+            _active = false;
+        }
         ImGui::Separator();
         if (ImGui::Button("Ok")) {
-            cout << "SaveSimulationModal::Ok\n";
+            _sim->save(_flist.path.string() + _chosen);
             ImGui::CloseCurrentPopup();
             _active = false;
         }
         ImGui::SameLine();
-        if (ImGui::Button("Refresh")) {
-            _flist.refresh();
+        if (ImGui::Button("Cancel")) {
+            ImGui::CloseCurrentPopup();
+            _active = false;
         }
         ImGui::EndPopup();
     }
