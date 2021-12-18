@@ -133,6 +133,7 @@ void Simulation::clearCameras() {
 }
 
 bool Simulation::load(const string &name) {
+    cout << "Simulation::load(" << name << ")\n";
     _sceneMgr->getRootSceneNode()->loadChildren(name + ".scene");
     _empty = false;
 
@@ -154,6 +155,7 @@ bool Simulation::load(const string &name) {
 }
 
 bool Simulation::save(const string &name) const {
+    cout << "Simulation::save(" << name << ")\n";
     if (_empty)  return false;
     _sceneMgr->getRootSceneNode()->saveChildren(name + ".scene");
 
