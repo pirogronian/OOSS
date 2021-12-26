@@ -20,9 +20,25 @@ LoadSaveModal::LoadSaveModal(const path& p, Simulation *s, Type t) : _sim(s), _t
     ImGui::OpenPopup(_cpt);
 }
 
+void LoadSaveModal::_doLoad() {
+    _sim->load(_flist.path.string() + _chosen);
+    _doClose();
+}
+
+void LoadSaveModal::_doSave() {
+    _sim->save(_flist.path.string() + _chosen);
+    _doClose();
+}
+
+void LoadSaveModal::_doClose() {
+    ImGui::CloseCurrentPopup();
+    _active = false;
+}
+
 bool LoadSaveModal::frameStarted(const Ogre::FrameEvent &e) {
     if (ImGui::BeginPopupModal(_cpt)) {
         _chosen = _edit;
+        bool close = false;
         ImGui::Text(_flist.path.string().data());
         if (ImGui::Button("Refresh")) {
             _flist.refresh();
@@ -45,18 +61,35 @@ bool LoadSaveModal::frameStarted(const Ogre::FrameEvent &e) {
         }
         ImGui::Separator();
         if (ImGui::Button("Ok")) {
-            if (_type == Save)
-                _sim->save(_flist.path.string() + _chosen);
+            if (_type == Save) {
+                if (_flist.contains(_chosen))
+                    ImGui::OpenPopup("Overwrite?");
+                else _doSave();
+            }
             else
-                _sim->load(_flist.path.string() + _chosen);
-            ImGui::CloseCurrentPopup();
-            _active = false;
+                _doLoad();
         }
         ImGui::SameLine();
         if (ImGui::Button("Cancel")) {
             ImGui::CloseCurrentPopup();
             _active = false;
         }
+        bool save = false;
+        if (ImGui::BeginPopupModal("Overwrite?")) {
+            ImGui::Text("Following slot already exists. Are you sure to overwrite it?");
+            ImGui::Text(_chosen.data());
+            ImGui::Separator();
+            if (ImGui::Button("Yes")) {
+                ImGui::CloseCurrentPopup();
+                save = true;
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("No")) {
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::EndPopup();
+        }
+        if (save)  _doSave();
         ImGui::EndPopup();
     }
 

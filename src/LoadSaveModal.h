@@ -19,6 +19,9 @@ public:
     char _edit[1024];
     Type _type;
     const char *_cpt;
+    void _doLoad();
+    void _doSave();
+    void _doClose();
 public:
     LoadSaveModal(const std::filesystem::path&, Simulation *, Type);
     bool frameStarted(const Ogre::FrameEvent &);
