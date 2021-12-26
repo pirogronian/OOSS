@@ -10,7 +10,7 @@ using namespace std::filesystem;
 
 SaveSimulationModal::SaveSimulationModal(const path& p, Simulation *s) : _sim(s) {
     _flist.path = p;
-    _flist.dir = true;
+    _flist.setFileTypeMask(FileList::Directory);
     _flist.refresh();
     _active = true;
     _chosen.reserve(1024);
