@@ -3,12 +3,12 @@
 #include <iostream>
 #include <imgui/imgui.h>
 
-#include "SaveSimulationModal.h"
+#include "LoadSaveModal.h"
 
 using namespace std;
 using namespace std::filesystem;
 
-SaveSimulationModal::SaveSimulationModal(const path& p, Simulation *s) : _sim(s) {
+LoadSaveModal::LoadSaveModal(const path& p, Simulation *s, Type t) : _sim(s), _type(t) {
     _flist.path = p;
     _flist.setFileTypeMask(FileList::Directory);
     _flist.refresh();
@@ -18,7 +18,7 @@ SaveSimulationModal::SaveSimulationModal(const path& p, Simulation *s) : _sim(s)
     ImGui::OpenPopup("Choose save slot");
 }
 
-bool SaveSimulationModal::frameStarted(const Ogre::FrameEvent &e) {
+bool LoadSaveModal::frameStarted(const Ogre::FrameEvent &e) {
     if (ImGui::BeginPopupModal("Choose save slot")) {
         _chosen = _edit;
         ImGui::Text(_flist.path.string().data());

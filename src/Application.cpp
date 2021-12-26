@@ -10,7 +10,7 @@
 #include "Player.h"
 
 #include "NewSimulationModal.h"
-#include "SaveSimulationModal.h"
+#include "LoadSaveModal.h"
 
 using namespace std;
 using namespace Ogre;
@@ -390,7 +390,7 @@ void Application::loadSimulation() {
 
 void Application::saveSimulationSlot() {
     assert(_mdp == nullptr);
-    _mdp = new SaveSimulationModal(getSavePath(), _sim);
+    _mdp = new LoadSaveModal(getSavePath(), _sim, LoadSaveModal::Load);
 }
 
 void Application::closeOperationPopup() {
