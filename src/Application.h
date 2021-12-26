@@ -88,6 +88,7 @@ public:
     void newBuiltinSimulation();
     void clearSimulation();
     void loadSimulation();
+    void loadSimulationSlot();
     void saveSimulation();
     void saveSimulationSlot();
 

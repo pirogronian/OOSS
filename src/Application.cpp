@@ -253,6 +253,7 @@ void Application::updateMainMenu()
     bool newSimBuiltin {false};
     bool clearSim {false};
     bool loadSim {false};
+    bool loadSimSlot {false};
     bool saveSim {false};
     bool saveSimSlot {false};
 
@@ -269,6 +270,7 @@ void Application::updateMainMenu()
             ImGui::MenuItem("New built-in", "", &newSimBuiltin);
             ImGui::MenuItem("Clear", "", &clearSim);
             ImGui::MenuItem("Load", "", &loadSim);
+            ImGui::MenuItem("Load from", "", &loadSimSlot);
             ImGui::MenuItem("Save", "", &saveSim);
             ImGui::MenuItem("Save to", "", &saveSimSlot);
             ImGui::EndMenu();
@@ -286,6 +288,7 @@ void Application::updateMainMenu()
     if (newSimBuiltin)  newBuiltinSimulation();
     if (clearSim) _sim->clear();
     if (loadSim)  loadSimulation();
+    if (loadSimSlot)  loadSimulationSlot();
     if (saveSim)  doSaveSimulation();
     if (saveSimSlot) saveSimulationSlot();
     if (quit) getRoot()->queueEndRendering();
@@ -388,9 +391,14 @@ void Application::loadSimulation() {
     ImGui::OpenPopup(ModalDialogCaption[SimulationNotEmpty]);
 }
 
-void Application::saveSimulationSlot() {
+void Application::loadSimulationSlot() {
     assert(_mdp == nullptr);
     _mdp = new LoadSaveModal(getSavePath(), _sim, LoadSaveModal::Load);
+}
+
+void Application::saveSimulationSlot() {
+    assert(_mdp == nullptr);
+    _mdp = new LoadSaveModal(getSavePath(), _sim, LoadSaveModal::Save);
 }
 
 void Application::closeOperationPopup() {

@@ -18,6 +18,7 @@ public:
     std::string _chosen;
     char _edit[1024];
     Type _type;
+    const char *_cpt;
 public:
     LoadSaveModal(const std::filesystem::path&, Simulation *, Type);
     bool frameStarted(const Ogre::FrameEvent &);
