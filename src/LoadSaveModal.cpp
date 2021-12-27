@@ -8,7 +8,7 @@
 using namespace std;
 using namespace std::filesystem;
 
-LoadSaveModal::LoadSaveModal(const path& p, Simulation *s, Type t) : _sim(s), _type(t) {
+LoadSaveModal::LoadSaveModal(const path& p, Simulation *s, Type t, bool clr) : _sim(s), _type(t), _clr(clr) {
     _flist.path = p;
     _flist.setFileTypeMask(FileList::Directory);
     _flist.refresh();
@@ -21,6 +21,7 @@ LoadSaveModal::LoadSaveModal(const path& p, Simulation *s, Type t) : _sim(s), _t
 }
 
 void LoadSaveModal::_doLoad() {
+    if (_clr) _sim->clear();
     _sim->load(_flist.path.string() + _chosen);
     _doClose();
 }

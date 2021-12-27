@@ -11,17 +11,6 @@
 
 class Application :  public OgreBites::ApplicationContext, public OgreBites::InputListener
 {
-    enum Operations {
-        NoOperation = 0,
-        NewBuiltinSimulation,
-        ClearSimulation,
-        LoadSimulation,
-        SaveSimulation
-    };
-    enum ModalDialog {
-        NoDialog = 0,
-        SimulationNotEmpty
-    };
     enum SubModules {
         DummyModule = 0,
         NewSimulationModule = 1,
@@ -48,8 +37,6 @@ class Application :  public OgreBites::ApplicationContext, public OgreBites::Inp
     SubModule *_mdp{nullptr};
     int _frameCounter {0};
     int _frameLimit{-1};
-    Operations _co{Operations::NoOperation};
-    ModalDialog _md {ModalDialog::NoDialog};
     VisibleUI _visibleUI;
 public:
     Application();
@@ -71,9 +58,6 @@ public:
 
     void updateMainMenu();
     void updateSimStatsWindow();
-
-    void dispatchModalDialog();
-    void simulationNotEmptyModalDialog();
 
     template<class Archive>
     void serialize(Archive &archv) {

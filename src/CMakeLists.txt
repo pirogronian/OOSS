@@ -71,6 +71,8 @@ target_sources(OOSS PRIVATE
     NewSimulationModal.cpp
     LoadSaveModal.h
     LoadSaveModal.cpp
+    LoadModal.h
+    LoadModal.cpp
     physics/physics.h
     physics/physics.cpp
     physics/BtOgre.h

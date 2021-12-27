@@ -11,14 +11,13 @@
 
 #include "NewSimulationModal.h"
 #include "LoadSaveModal.h"
+#include "LoadModal.h"
 
 using namespace std;
 using namespace Ogre;
 using namespace OgreBites;
 
 static const char DefaultSaveName[] {"defaultSave"};
-
-static const char *ModalDialogCaption[] { "", "Simulation not empty!" };
 
 class RTL : public Ogre::RenderTargetListener {
     Ogre::Viewport *_vp{nullptr};
@@ -116,7 +115,6 @@ bool Application::frameStarted(const Ogre::FrameEvent &evt)
     if (_visibleUI.mainMenu)  updateMainMenu();
     if (_visibleUI.demoWindow)  ImGui::ShowDemoWindow();
     if (_visibleUI.simStats) updateSimStatsWindow();
-    dispatchModalDialog();
 
     if (_mdp)
         if (_mdp->isActive())  _mdp->frameStarted(evt);
@@ -315,29 +313,6 @@ void Application::updateSimStatsWindow()
     ImGui::End();
 }
 
-void Application::dispatchModalDialog() {
-    if (_md == NoDialog)  return;
-    if (ImGui::BeginPopupModal(ModalDialogCaption[_md])) {
-        switch (_md) {
-            case SimulationNotEmpty: simulationNotEmptyModalDialog(); break;
-            default:
-                assert("Unknown modal dialog to dispatch!");
-        }
-        ImGui::EndPopup();
-    }
-}
-
-void Application::simulationNotEmptyModalDialog() {
-    ImGui::Text("Simulation is not empty! Are you sure to proceed?");
-    if (ImGui::Button("Yes")) {
-        if (_co == NewBuiltinSimulation)  doNewBuiltinSimulation();
-        if (_co == LoadSimulation)  doLoadSimulation();
-        closeOperationPopup();
-    }
-    ImGui::SameLine();
-    if (ImGui::Button("No")) closeOperationPopup();
-}
-
 void Application::doNewBuiltinSimulation() {
     try {
         _sim->populate();
@@ -364,16 +339,6 @@ void Application::doSaveSimulation() {
     _sim->save(path + DefaultSaveName);
 }
 
-// void Application::newBuiltinSimulation() {
-//     if (_co != NoOperation) { assert("Another operation in progress!"); return; }
-//     if (_sim->isEmpty()) {
-//         doNewBuiltinSimulation();
-//         return;
-//     }
-//     _co = NewBuiltinSimulation;
-//     _md = SimulationNotEmpty;
-//     ImGui::OpenPopup(ModalDialogCaption[SimulationNotEmpty]);
-// }
 void Application::newBuiltinSimulation() {
     assert(_mdp == nullptr);
     if (_sim->isEmpty())  _sim->populate();
@@ -381,29 +346,21 @@ void Application::newBuiltinSimulation() {
 }
 
 void Application::loadSimulation() {
-    if (_co != NoOperation) { assert("Another operation in progress!"); return; }
     if (_sim->isEmpty()) {
         doLoadSimulation();
         return;
     }
-    _co = LoadSimulation;
-    _md = SimulationNotEmpty;
-    ImGui::OpenPopup(ModalDialogCaption[SimulationNotEmpty]);
+    _mdp = new LoadModal(getSavePath(), _sim, DefaultSaveName);
 }
 
 void Application::loadSimulationSlot() {
     assert(_mdp == nullptr);
-    _mdp = new LoadSaveModal(getSavePath(), _sim, LoadSaveModal::Load);
+    _mdp = new LoadModal(getSavePath(), _sim);
 }
 
 void Application::saveSimulationSlot() {
     assert(_mdp == nullptr);
     _mdp = new LoadSaveModal(getSavePath(), _sim, LoadSaveModal::Save);
-}
-
-void Application::closeOperationPopup() {
-    ImGui::CloseCurrentPopup();
-    _co = NoOperation;
 }
 
 String Application::getSavePath(bool create) {
