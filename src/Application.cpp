@@ -355,7 +355,9 @@ void Application::loadSimulation() {
 
 void Application::loadSimulationSlot() {
     assert(_mdp == nullptr);
-    _mdp = new LoadModal(getSavePath(), _sim);
+    if (_sim->isEmpty()) {
+        _mdp = new LoadSaveModal(getSavePath(), _sim, LoadSaveModal::Load);
+    } else _mdp = new LoadModal(getSavePath(), _sim);
 }
 
 void Application::saveSimulationSlot() {
