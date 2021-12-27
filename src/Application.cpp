@@ -342,7 +342,7 @@ void Application::doSaveSimulation() {
 void Application::newBuiltinSimulation() {
     assert(_mdp == nullptr);
     if (_sim->isEmpty())  _sim->populate();
-    else _mdp = new NewSimulationModal(_sim);
+    else _mdp = new LoadModal("", _sim, string(), true);
 }
 
 void Application::loadSimulation() {

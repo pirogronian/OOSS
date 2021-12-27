@@ -6,7 +6,7 @@
 using namespace std;
 using namespace Ogre;
 
-LoadModal::LoadModal(const filesystem::path &p, Simulation *s, string sn) : _path(p), _sim(s), _sn(sn) {
+LoadModal::LoadModal(const filesystem::path &p, Simulation *s, string sn, bool bi) : _path(p), _sim(s), _sn(sn), _builtin(bi) {
     ImGui::OpenPopup("Simulation not empty!");
     _active = true;
 }
@@ -25,13 +25,14 @@ bool LoadModal::frameStarted(const Ogre::FrameEvent &e) {
         ImGui::Text("Simulation is not empty. Are you sure to load another one?");
         ImGui::Checkbox("Clear before load", &_clr);
         if (ImGui::Button("Yes")) {
-            if (_sn.empty()) {
+            if (!_builtin && _sn.empty()) {
                 cout << "LoadModal: starting LoadSaveModal\n";
                 _lsmp = new LoadSaveModal(_path, _sim, LoadSaveModal::Load, _clr);
             } else {
-                cout << "LoadModal: load default\n";
+                cout << "LoadModal: load default or builtin\n";
                 if (_clr)  _sim->clear();
-                _load();
+                if (_builtin) _sim->populate();
+                else _load();
                 _close();
             }
         }
