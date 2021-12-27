@@ -22,12 +22,12 @@ LoadSaveModal::LoadSaveModal(const path& p, Simulation *s, Type t, bool clr) : _
 
 void LoadSaveModal::_doLoad() {
     if (_clr) _sim->clear();
-    _sim->load(_flist.path.string() + _chosen);
+    _sim->load(_flist.path / _chosen);
     _doClose();
 }
 
 void LoadSaveModal::_doSave() {
-    _sim->save(_flist.path.string() + _chosen);
+    _sim->save(_flist.path / _chosen);
     _doClose();
 }
 

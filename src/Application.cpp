@@ -364,7 +364,7 @@ void Application::saveSimulationSlot() {
 }
 
 String Application::getSavePath(bool create) {
-    auto path = getSaveSubdirName() + "/";
+    auto path = getSaveSubdirName();
     if (create)  FileSystemLayer::createDirectory(path);
     return path;
 }

@@ -39,6 +39,10 @@ void Simulation::update(double delta)
        	_debugDrawer->update();
 }
 
+void Simulation::loadBuiltin(const string &name) {
+    if (name.empty())  populate();
+}
+
 void Simulation::populate()
 {
     _empty = false;

@@ -31,7 +31,7 @@ bool LoadModal::frameStarted(const Ogre::FrameEvent &e) {
             } else {
                 cout << "LoadModal: load default or builtin\n";
                 if (_clr)  _sim->clear();
-                if (_builtin) _sim->populate();
+                if (_builtin) _sim->loadBuiltin(_sn);
                 else _load();
                 _close();
             }

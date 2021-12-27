@@ -40,6 +40,7 @@ public:
 
     void createDummyVieport();
     void destroyDummyVieport();
+    void loadBuiltin(const std::string&);
     void populate();
     void clear();
     void clearRigidBodies(bool);
