@@ -67,8 +67,6 @@ target_sources(OOSS PRIVATE
     Simulation.cpp
     Player.h
     Player.cpp
-    NewSimulationModal.h
-    NewSimulationModal.cpp
     LoadSaveModal.h
     LoadSaveModal.cpp
     LoadModal.h

@@ -9,7 +9,6 @@
 
 #include "Player.h"
 
-#include "NewSimulationModal.h"
 #include "LoadSaveModal.h"
 #include "LoadModal.h"
 
