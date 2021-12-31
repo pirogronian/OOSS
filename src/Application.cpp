@@ -74,7 +74,7 @@ void Application::setup()
     _sim = new Simulation(_sceneMgr);
     _sim->setRenderTarget(getRenderWindow());
     _pl = _sim->getPlayer();
-    _stc = new SimTimeControl(_sim);
+    _stc = new SimTimeControl(_sim, &_visibleUI.timeControl);
 
     _imguiOverlay = new Ogre::ImGuiOverlay();
 
@@ -276,7 +276,7 @@ void Application::updateMainMenu()
         }
         if (ImGui::BeginMenu("View")) {
             ImGui::MenuItem("Show sim stats", "", &_visibleUI.simStats);
-            ImGui::MenuItem("Sim time control", "", &_stc->visible);
+            ImGui::MenuItem("Sim time control", "", &_visibleUI.timeControl);
             ImGui::MenuItem("Nodes", "", &showNodes);
             ImGui::MenuItem("Boxes", "", &showBboxes);
             ImGui::MenuItem("Physics", "", &showPhysDebug);

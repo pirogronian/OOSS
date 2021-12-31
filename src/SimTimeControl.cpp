@@ -7,11 +7,11 @@
 using namespace std;
 using namespace Ogre;
 
-SimTimeControl::SimTimeControl(Simulation *s) : _sim(s) {}
+SimTimeControl::SimTimeControl(Simulation *s, bool *v) : _sim(s), _v(v) {}
 
 bool SimTimeControl::frameStarted(const Ogre::FrameEvent &e) {
-    if (!visible) return false;
-    if (ImGui::Begin("Time control", &visible)) {
+    if (!*_v) return false;
+    if (ImGui::Begin("Time control", _v)) {
         ImGui::Text("Time: %f", _sim->getSimulationTime());
         if (_sim->isPaused()) {
             if (ImGui::Button("Resume"))  _sim->resume();

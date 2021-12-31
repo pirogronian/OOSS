@@ -8,8 +8,8 @@
 class SimTimeControl : public SubModule {
     Simulation *_sim;
     int _mt {0};
+    bool *_v;
 public:
-    bool visible{true};
-    SimTimeControl(Simulation *s);
+    SimTimeControl(Simulation *s, bool * = nullptr);
     bool frameStarted(const Ogre::FrameEvent &);
 };

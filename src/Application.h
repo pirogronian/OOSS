@@ -23,10 +23,11 @@ class Application :  public OgreBites::ApplicationContext, public OgreBites::Inp
         bool demoWindow {false};
         bool mainMenu {true};
         bool simStats {false};
+        bool timeControl{true};
         bool populateWarning {false};
         template<class Archive>
         void serialize(Archive &archv) {
-            archv(CEREAL_NVP(demoWindow), CEREAL_NVP(mainMenu), CEREAL_NVP(simStats));
+            archv(CEREAL_NVP(demoWindow), CEREAL_NVP(mainMenu), CEREAL_NVP(simStats), CEREAL_NVP(timeControl));
         }
     };
     Ogre::SceneManager *_sceneMgr;
