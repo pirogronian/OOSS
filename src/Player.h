@@ -2,6 +2,7 @@
 #pragma once
 
 #include <vector>
+#include <cereal/archives/xml.hpp>
 
 #include <OgreViewport.h>
 #include <OgreRenderTarget.h>
@@ -71,22 +72,22 @@ public:
     template<class Ar>
     void save(Ar &oa) const {
         int n = _vps.size();
-        oa(n);
+        oa(cereal::make_nvp("VieportNum", n));
         for (auto &vp : _vps) {
-            oa(vp->getCamera()->getName());
+            oa(cereal::make_nvp("CamName", vp->getCamera()->getName()));
             oa(
-                vp->getZOrder(),
-               vp->getLeft(),
-               vp->getTop(),
-               vp->getWidth(),
-               vp->getHeight()
+                cereal::make_nvp("ZOrder", vp->getZOrder()),
+               cereal::make_nvp("Left", vp->getLeft()),
+               cereal::make_nvp("Top", vp->getTop()),
+               cereal::make_nvp("Width", vp->getWidth()),
+               cereal::make_nvp("Height", vp->getHeight())
             );
         }
         {
             auto name = _cm->getCamera()->getName();
             auto cs = _cm->getStyle();
-            oa(name);
-            oa(cs);
+            oa(cereal::make_nvp("3rdCamName", name));
+            oa(cereal::make_nvp("3rdCamStyle", cs));
         }
     }
 };

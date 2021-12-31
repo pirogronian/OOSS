@@ -32,7 +32,10 @@ namespace cereal {
 
     template<class Ar>
     void serialize(Ar &a, Ogre::ColourValue &cv) {
-        a(cv.r, cv.g, cv.b, cv.a);
+        a(make_nvp("Red", cv.r));
+        a(make_nvp("Green", cv.g));
+        a(make_nvp("Blue", cv.b));
+        a(make_nvp("Alpha", cv.a));
     }
 
 /*    template<class Ar>
