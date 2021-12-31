@@ -73,6 +73,8 @@ target_sources(OOSS PRIVATE
     LoadModal.cpp
     SimTimeControl.h
     SimTimeControl.cpp
+    SceneInspector.h
+    SceneInspector.cpp
     physics/physics.h
     physics/physics.cpp
     physics/BtOgre.h

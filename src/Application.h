@@ -1,6 +1,5 @@
 
 #include <OgreApplicationContext.h>
-// #include <ImguiManager.h>
 #include <OgreImGuiOverlay.h>
 #include <OgreImGuiInputListener.h>
 
@@ -9,6 +8,7 @@
 #include "SubModule.h"
 #include <Simulation.h>
 #include <SimTimeControl.h>
+#include <SceneInspector.h>
 
 class Application :  public OgreBites::ApplicationContext, public OgreBites::InputListener
 {
@@ -24,10 +24,11 @@ class Application :  public OgreBites::ApplicationContext, public OgreBites::Inp
         bool mainMenu {true};
         bool simStats {false};
         bool timeControl{true};
+        bool sceneInspector{false};
         bool populateWarning {false};
         template<class Archive>
         void serialize(Archive &archv) {
-            archv(CEREAL_NVP(demoWindow), CEREAL_NVP(mainMenu), CEREAL_NVP(simStats), CEREAL_NVP(timeControl));
+            archv(CEREAL_NVP(demoWindow), CEREAL_NVP(mainMenu), CEREAL_NVP(simStats), CEREAL_NVP(timeControl), CEREAL_NVP(sceneInspector));
         }
     };
     Ogre::SceneManager *_sceneMgr;
@@ -41,6 +42,7 @@ class Application :  public OgreBites::ApplicationContext, public OgreBites::Inp
     int _frameLimit{-1};
     VisibleUI _visibleUI;
     SimTimeControl *_stc;
+    SceneInspector *_si;
 public:
     Application();
     void setup();

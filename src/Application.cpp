@@ -75,6 +75,7 @@ void Application::setup()
     _sim->setRenderTarget(getRenderWindow());
     _pl = _sim->getPlayer();
     _stc = new SimTimeControl(_sim, &_visibleUI.timeControl);
+    _si = new SceneInspector(_sim, &_visibleUI.sceneInspector);
 
     _imguiOverlay = new Ogre::ImGuiOverlay();
 
@@ -116,6 +117,7 @@ bool Application::frameStarted(const Ogre::FrameEvent &evt)
     if (_visibleUI.demoWindow)  ImGui::ShowDemoWindow();
     if (_visibleUI.simStats) updateSimStatsWindow();
     _stc->frameStarted(evt);
+    _si->frameStarted(evt);
 
     if (_mdp)
         if (_mdp->isActive())  _mdp->frameStarted(evt);
@@ -277,6 +279,7 @@ void Application::updateMainMenu()
         if (ImGui::BeginMenu("View")) {
             ImGui::MenuItem("Show sim stats", "", &_visibleUI.simStats);
             ImGui::MenuItem("Sim time control", "", &_visibleUI.timeControl);
+            ImGui::MenuItem("Scene inspector", "", &_visibleUI.sceneInspector);
             ImGui::MenuItem("Nodes", "", &showNodes);
             ImGui::MenuItem("Boxes", "", &showBboxes);
             ImGui::MenuItem("Physics", "", &showPhysDebug);
