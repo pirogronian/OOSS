@@ -79,7 +79,7 @@ Simulation::Simulation(Ogre::SceneManager *sceneMgr)
     _sceneMgr = sceneMgr;
     Ogre::RTShader::ShaderGenerator* shadergen = Ogre::RTShader::ShaderGenerator::getSingletonPtr();
     shadergen->addSceneManager(_sceneMgr);
-    _debugDrawer = new BtOgre::DebugDrawer(_sceneMgr->getRootSceneNode(), &_world.getBtWorld());
+    _initPhysics();
 
     _pl = new Player(this);
 }
@@ -87,7 +87,7 @@ Simulation::Simulation(Ogre::SceneManager *sceneMgr)
 void Simulation::update(double delta)
 {
 //     dump(_world);
-    _world.stepSimulation(delta);
+    _world->stepSimulation(delta);
 
     if(_debugDraw)
        	_debugDrawer->update();
@@ -115,21 +115,21 @@ void Simulation::populate()
 
     auto shape1 = BtOgre::StaticMeshToShapeConverter(ogreEnt).createTrimesh();
     auto body1 = new RigidBody(ogrenode, 0, shape1);
-    _world.addRigidBody(body1);
+    _world->addRigidBody(body1);
 
     auto shape2 = BtOgre::StaticMeshToShapeConverter(fishEnt).createConvex();
 //    auto bbody2 = new btRigidBody(1, nullptr, shape2);
     auto body2 = new RigidBody(fishNode, 1, shape2);
 //    auto body2 = new RigidBody(fishNode, bbody2);
-    _world.addRigidBody(body2);
+    _world->addRigidBody(body2);
 
     body2->getBtRigidBody()->setLinearVelocity(btVector3(7, 0, 0));
 
     auto gc = new GravityCenter(body1);
     gc->setFactor(1000);
-    _world.addGravityCenter(gc);
+    _world->addGravityCenter(gc);
 
-    _world.setGlobalGravity(btVector3(0, 0, 0));
+    _world->setGlobalGravity(btVector3(0, 0, 0));
 
     Ogre::Camera *cam = _sceneMgr->createCamera("TestCamera");
     cam->setNearClipDistance(0.5);
@@ -153,17 +153,18 @@ void Simulation::clear()
     _pl->clear();
     clearCameras();
 
+    _clearPhysics();
+    _initPhysics();
     // Clearing the scene detaches internal ManualObject, so it has to be attached again.
-    _debugDrawer->attach(_sceneMgr->getRootSceneNode());
     _empty = true;
 }
 
 void Simulation::clearRigidBodies(bool clearnodes)
 {
-    for (std::size_t i = 0; i < _world.getMaxRigidBodyIndex(); i++) {
-        RigidBody *rb = _world.getRigidBody(i);
+    for (std::size_t i = 0; i < _world->getMaxRigidBodyIndex(); i++) {
+        RigidBody *rb = _world->getRigidBody(i);
         if (!rb)  continue;
-        _world.removeRigidBody(rb);
+        _world->removeRigidBody(rb);
         if (clearnodes) {
             Ogre::SceneNode *sn = rb->getSceneNode();
             if (sn)  _sceneMgr->destroySceneNode(sn);
@@ -173,10 +174,10 @@ void Simulation::clearRigidBodies(bool clearnodes)
 }
 
 void Simulation::clearGravityCenters(bool clearnodes) {
-    for (std::size_t i = 0; i < _world.getMaxGravityCenterIndex(); i++) {
-        GravityCenter *gr = _world.getGravityCenter(i);
+    for (std::size_t i = 0; i < _world->getMaxGravityCenterIndex(); i++) {
+        GravityCenter *gr = _world->getGravityCenter(i);
         if (!gr) continue;
-        _world.removeGravityCenter(gr);
+        _world->removeGravityCenter(gr);
         if (clearnodes && gr->isType<Ogre::SceneNode*>()) {
             Ogre::SceneNode *sn = gr->getOwner<Ogre::SceneNode*>();
             if (sn)  _sceneMgr->destroySceneNode(sn);
@@ -184,10 +185,23 @@ void Simulation::clearGravityCenters(bool clearnodes) {
     }
 }
 
+void Simulation::_clearPhysics() {
+    delete _debugDrawer;
+    _debugDrawer = nullptr;
+    delete _world;
+    _world = nullptr;
+}
+
 void Simulation::clearCameras() {
     for (auto &cam : _sceneMgr->getCameras()) {
         _sceneMgr->destroyCamera(cam.second->getName());
     }
+}
+
+void Simulation::_initPhysics() {
+    _world = new DynamicsWorld();
+    _debugDrawer = new BtOgre::DebugDrawer(_sceneMgr->getRootSceneNode(), &_world->getBtWorld());
+    _debugDrawer->attach(_sceneMgr->getRootSceneNode());
 }
 
 bool Simulation::load(const filesystem::path &name) {
@@ -205,7 +219,7 @@ bool Simulation::load(const filesystem::path &name) {
     _empty = false;
 
     auto bulletFile = name / "physics.bullet";
-    _world.loadPhysics(bulletFile);
+    _world->loadPhysics(bulletFile);
 
     ifstream is(name / "simulation.xml");
     {
@@ -238,7 +252,7 @@ bool Simulation::save(const filesystem::path &name) {
     _sceneMgr->getRootSceneNode()->saveChildren(name / "scene.scene");
 
     auto bulletFile = name / "physics.bullet";
-    _world.savePhysics(bulletFile);
+    _world->savePhysics(bulletFile);
 
     ofstream os(name / "simulation.xml");
     cereal::XMLOutputArchive oa(os);

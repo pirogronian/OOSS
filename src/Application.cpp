@@ -305,7 +305,7 @@ void Application::updateSimStatsWindow()
             ImGui::TableNextColumn();
             ImGui::Text("Rigid bodies num:");
             ImGui::TableNextColumn();
-            ImGui::Text("%i", _sim->getDynamicsWorld().rigidBodiesNumber());
+            ImGui::Text("%i", _sim->getDynamicsWorld()->rigidBodiesNumber());
             ImGui::EndTable();
         }
     }

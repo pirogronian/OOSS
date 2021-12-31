@@ -17,11 +17,14 @@ class Simulation
 {
     Ogre::SceneManager *_sceneMgr{nullptr};
     Ogre::RenderTarget *_rt{nullptr};
-    DynamicsWorld _world;
+    DynamicsWorld *_world{nullptr};
     BtOgre::DebugDrawer *_debugDrawer{nullptr};
     bool _debugDraw{true};
     bool _empty{true};
     Player *_pl{nullptr};
+protected:
+    void _initPhysics();
+    void _clearPhysics();
 public:
     Simulation(Ogre::SceneManager *);
     bool isEmpty() const { return _empty; }
@@ -29,7 +32,7 @@ public:
     bool getDebugDraw() const { return _debugDraw; }
     void setDebugDraw(bool d) { _debugDraw = d; }
     BtOgre::DebugDrawer *getPhysicsDebugDrawer() { return _debugDrawer; }
-    DynamicsWorld &getDynamicsWorld() { return _world; }
+    DynamicsWorld *getDynamicsWorld() { return _world; }
     Ogre::SceneManager *getSceneManager() { return _sceneMgr; }
     const Ogre::SceneManager *getSceneManager() const { return _sceneMgr; }
     Ogre::RenderTarget *getRenderTarget() { return _rt; }
