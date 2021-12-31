@@ -326,16 +326,16 @@ void Application::doClearSimulation() {
 
 void Application::doLoadSimulation() {
     try {
-        String path = getSavePath();
-        _sim->load(path + DefaultSaveName);
+        auto path = getSavePath();
+        _sim->load(path / DefaultSaveName);
     } catch (Ogre::ItemIdentityException e) {
         cout << e.what() << endl;
     }
 }
 
 void Application::doSaveSimulation() {
-    String path = getSavePath();
-    _sim->save(path + DefaultSaveName);
+    auto path = getSavePath();
+    _sim->save(path / DefaultSaveName);
 }
 
 void Application::newBuiltinSimulation() {
@@ -364,7 +364,7 @@ void Application::saveSimulationSlot() {
     _mdp = new LoadSaveModal(getSavePath(), _sim, LoadSaveModal::Save);
 }
 
-String Application::getSavePath(bool create) {
+filesystem::path Application::getSavePath(bool create) {
     auto path = getSaveSubdirName();
     if (create)  FileSystemLayer::createDirectory(path);
     return path;

@@ -79,5 +79,5 @@ public:
     void closeOperationPopup();
 
     Ogre::String getSaveSubdirName() const { return "saves"; }
-    Ogre::String getSavePath(bool = true);
+    std::filesystem::path getSavePath(bool = true);
 };

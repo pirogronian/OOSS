@@ -3,6 +3,7 @@
 #include <cereal/archives/xml.hpp>
 
 #include <OgreShaderGenerator.h>
+#include <OgreNode.h>
 
 #include "Simulation.h"
 #include "Player.h"
@@ -14,10 +15,60 @@ using namespace std;
 using namespace Ogre;
 
 namespace cereal {
-template<class Ar>
-void serialize(Ar &a, Ogre::ColourValue &cv) {
-    a(cv.r, cv.g, cv.b, cv.a);
-}
+    template<class Ar>
+    void serialize(Ar &ar, Ogre::Vector3 &v) {
+        ar(make_nvp("x", v[0]),
+           make_nvp("y", v[1]),
+           make_nvp("z", v[2]));
+    }
+
+    template<class Ar>
+    void serialize(Ar &ar, Ogre::Quaternion &q) {
+        ar(make_nvp("x", q.x),
+           make_nvp("y", q.y),
+           make_nvp("z", q.z),
+           make_nvp("w", q.w));
+    }
+
+    template<class Ar>
+    void serialize(Ar &a, Ogre::ColourValue &cv) {
+        a(cv.r, cv.g, cv.b, cv.a);
+    }
+
+/*    template<class Ar>
+    void save(Ar &ar, Ogre::SceneNode const &node) {
+        ar(make_nvp("name", node.getName()));
+        ar(make_nvp("position", node.getPosition()));
+        ar(make_nvp("orientation", node.getOrientation()));
+        ar(make_nvp("children", node.getChildren()));
+    }
+
+    template<class Ar>
+    void save(Ar &ar, Ogre::Node::ChildNodeMap const &map) {
+        ar(make_nvp("ChildrenNumber", map.size()));
+        for (auto &child : map)
+//             ar(make_nvp("ChildNode", dynamic_cast<Ogre::SceneNode&>(*child)));
+            ar(dynamic_cast<Ogre::SceneNode&>(*child));
+    }
+
+    template<class Ar>
+    void load(Ar &ar, Ogre::SceneNode &node) {
+        size_t cn;
+        ar(cn);
+        cout << "Loading " << cn << " children\n";
+        for (int i = 0; i < cn; i++) {
+            Ogre::String n;
+            Ogre::Vector3 v;
+            Ogre::Quaternion q;
+            ar(n);
+            cout << "Loading node \"" << n << "\"\n";
+            ar(v, q);
+            cout << "Creating node \"" << n << "\"\n";
+            Ogre::SceneNode *nn = node.createChildSceneNode(n, v, q);
+            cout << "Node \"" << n << "\" created\n";
+            ar(*nn);
+        }
+    }*/
 }
 
 Simulation::Simulation(Ogre::SceneManager *sceneMgr)
@@ -154,6 +205,7 @@ bool Simulation::load(const filesystem::path &name) {
     {
         try {
             cereal::XMLInputArchive ia(is);
+//             ia(*_sceneMgr->getRootSceneNode());
             ia(*_pl);
             ColourValue al;
             ia(al);
@@ -181,6 +233,7 @@ bool Simulation::save(const filesystem::path &name) const {
 
     ofstream os(name / "simulation.xml");
     cereal::XMLOutputArchive oa(os);
+//     oa(cereal::make_nvp("Scene", _sceneMgr->getRootSceneNode()->getChildren()));
     oa(cereal::make_nvp("Player", *_pl));
     ColourValue al = _sceneMgr->getAmbientLight();
     oa(cereal::make_nvp("AmbientLight", al));
