@@ -6,6 +6,26 @@
 using namespace std;
 using namespace Ogre;
 
+void ViewportData::from(Viewport const *vp) {
+    camName = vp->getCamera()->getName();
+    zorder = vp->getZOrder();
+    left = vp->getLeft();
+    top = vp->getTop();
+    width = vp->getWidth();
+    height = vp->getHeight();
+}
+
+std::ostream& operator<<(std::ostream &o, ViewportData const &vpd) {
+    o << "ViewportData[";
+    o << vpd.camName;
+    o << ", z: " << vpd.zorder;
+    o << ", l:" << vpd.left;
+    o << ", t:" << vpd.top;
+    o << ", w:" << vpd.width;
+    o << ", h:" << vpd.height << "]";
+    return o;
+}
+
 RenderTarget *Player::getRenderTarget() { return _sim->getRenderTarget(); }
 RenderTarget const *Player::getRenderTarget() const { return _sim->getRenderTarget(); }
 

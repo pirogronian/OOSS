@@ -11,11 +11,32 @@
 
 #include "Simulation.h"
 
+struct ViewportData {
+    Ogre::String camName;
+    Ogre::Real left, top, width, height, zorder;
+    void from(Ogre::Viewport const *);
+    template<class Ar>
+    void serialize(Ar &a) {
+        a(cereal::make_nvp("CameraName", camName),
+        cereal::make_nvp("ZOrder", zorder),
+        cereal::make_nvp("Left", left),
+        cereal::make_nvp("Top", top),
+        cereal::make_nvp("Width", width),
+        cereal::make_nvp("Height", height));
+    }
+};
+
+std::ostream& operator<<(std::ostream&, ViewportData const &);
+
 class Player : public OgreBites::InputListener {
     Simulation *_sim{nullptr};
     std::vector<Ogre::Viewport*> _vps;
     OgreBites::CameraMan *_cm{nullptr};
 public:
+    struct CamManData {
+        Ogre::String camName;
+        int camStyle;
+    };
     Player(Simulation *s) : _sim(s) {}
 
     Simulation *getSimulation() { return _sim; }
@@ -50,13 +71,15 @@ public:
         int vpn = 0;
         ia(vpn);
         while(vpn) {
-            Ogre::String camname;
-            int z = 0;
-            Ogre::Real l, t, w, h;
-            ia(camname, z, l, t, w, h);
-            auto *cam = _sim->getSceneManager()->getCamera(camname);
-            if (!cam)  continue;
-            auto *vp = addViewport(cam, z, l, t, w, h);
+            ViewportData vpd;
+            ia(vpd);
+            auto *cam = _sim->getSceneManager()->getCamera(vpd.camName);
+            if (!cam)  {
+                std::cout << "Player::load: Camera not found, viewport " << vpd.zorder << " not created!\n";
+                continue;
+            }
+            std::cout << vpd << std::endl;
+            auto *vp = addViewport(cam, vpd.zorder, vpd.left, vpd.top, vpd.width, vpd.height);
             --vpn;
         }
         {
@@ -74,20 +97,23 @@ public:
         int n = _vps.size();
         oa(cereal::make_nvp("VieportNum", n));
         for (auto &vp : _vps) {
-            oa(cereal::make_nvp("CamName", vp->getCamera()->getName()));
+            ViewportData vpd;
+            vpd.from(vp);
+            oa(cereal::make_nvp("Viewport", vpd));
+            /*oa(cereal::make_nvp("CamName", vp->getCamera()->getName()));
             oa(
                 cereal::make_nvp("ZOrder", vp->getZOrder()),
                cereal::make_nvp("Left", vp->getLeft()),
                cereal::make_nvp("Top", vp->getTop()),
                cereal::make_nvp("Width", vp->getWidth()),
                cereal::make_nvp("Height", vp->getHeight())
-            );
+            );*/
         }
         {
             auto name = _cm->getCamera()->getName();
             auto cs = _cm->getStyle();
-            oa(cereal::make_nvp("3rdCamName", name));
-            oa(cereal::make_nvp("3rdCamStyle", cs));
+            oa(cereal::make_nvp("ThirdCamName", name));
+            oa(cereal::make_nvp("ThirdCamStyle", cs));
         }
     }
 };
