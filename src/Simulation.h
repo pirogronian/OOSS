@@ -48,5 +48,5 @@ public:
     void clearCameras();
 
     bool load(const std::filesystem::path &);
-    bool save(const std::filesystem::path &) const;
+    bool save(const std::filesystem::path &);
 };

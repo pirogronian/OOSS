@@ -1,5 +1,8 @@
 
 #include <iostream>
+#include <fstream>
+
+#include <BulletWorldImporter/btBulletWorldImporter.h>
 
 #include <utils/DumpHelper.h>
 
@@ -76,6 +79,26 @@ void DynamicsWorld::stepSimulation(btScalar d)
     _updateRigidBodies(d);
     _world.stepSimulation(d, _maxSubSteps, _minStepDelta);
 //     _world.stepSimulation(d, 0, 0);
+}
+
+void DynamicsWorld::loadPhysics(filesystem::path const &path) {
+    cout << "DynamicsWorld::loadPhysics(" << path << ")\n";
+    auto *importer = new btBulletWorldImporter(&_world);
+    if (!importer->loadFile(path.string().data()))
+        cout << "Importing failed!\n";
+}
+
+void DynamicsWorld::savePhysics(filesystem::path const &path) {
+    cout << "DynamicsWorld::savePhysics(" << path << ")\n";
+    auto *serializer = new btDefaultSerializer();
+    _world.serialize(serializer);
+    filebuf fb;
+    fb.open(path, ios::out);
+    ostream o(&fb);
+    o.write(reinterpret_cast<const char*>(serializer->getBufferPointer()), serializer->getCurrentBufferSize());
+    if (!o.good())
+        cout << "Writing failed!\n";
+    fb.close();
 }
 
 void dump(const DynamicsWorld *dw) {

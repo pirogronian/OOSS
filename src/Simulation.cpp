@@ -204,6 +204,9 @@ bool Simulation::load(const filesystem::path &name) {
     _sceneMgr->getRootSceneNode()->loadChildren(sceneFile);
     _empty = false;
 
+    auto bulletFile = name / "physics.bullet";
+    _world.loadPhysics(bulletFile);
+
     ifstream is(name / "simulation.xml");
     {
         try {
@@ -222,7 +225,7 @@ bool Simulation::load(const filesystem::path &name) {
     return true;
 }
 
-bool Simulation::save(const filesystem::path &name) const {
+bool Simulation::save(const filesystem::path &name) {
     cout << "Simulation::save(" << name << ")\n";
     if (!filesystem::is_directory(name)) {
         cout << "Slot not exists, creating!\n";
@@ -233,6 +236,9 @@ bool Simulation::save(const filesystem::path &name) const {
     }
     if (_empty)  return false;
     _sceneMgr->getRootSceneNode()->saveChildren(name / "scene.scene");
+
+    auto bulletFile = name / "physics.bullet";
+    _world.savePhysics(bulletFile);
 
     ofstream os(name / "simulation.xml");
     cereal::XMLOutputArchive oa(os);
