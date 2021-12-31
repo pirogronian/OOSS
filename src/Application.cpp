@@ -74,6 +74,7 @@ void Application::setup()
     _sim = new Simulation(_sceneMgr);
     _sim->setRenderTarget(getRenderWindow());
     _pl = _sim->getPlayer();
+    _stc = new SimTimeControl(_sim);
 
     _imguiOverlay = new Ogre::ImGuiOverlay();
 
@@ -114,6 +115,7 @@ bool Application::frameStarted(const Ogre::FrameEvent &evt)
     if (_visibleUI.mainMenu)  updateMainMenu();
     if (_visibleUI.demoWindow)  ImGui::ShowDemoWindow();
     if (_visibleUI.simStats) updateSimStatsWindow();
+    _stc->frameStarted(evt);
 
     if (_mdp)
         if (_mdp->isActive())  _mdp->frameStarted(evt);
@@ -274,10 +276,11 @@ void Application::updateMainMenu()
         }
         if (ImGui::BeginMenu("View")) {
             ImGui::MenuItem("Show sim stats", "", &_visibleUI.simStats);
-            ImGui::MenuItem("Show nodes", "", &showNodes);
-            ImGui::MenuItem("Show boxes", "", &showBboxes);
-            ImGui::MenuItem("Show physics", "", &showPhysDebug);
-            ImGui::MenuItem("Show ImGui demo", "", &_visibleUI.demoWindow);
+            ImGui::MenuItem("Sim time control", "", &_stc->visible);
+            ImGui::MenuItem("Nodes", "", &showNodes);
+            ImGui::MenuItem("Boxes", "", &showBboxes);
+            ImGui::MenuItem("Physics", "", &showPhysDebug);
+            ImGui::MenuItem("ImGui demo", "", &_visibleUI.demoWindow);
             ImGui::EndMenu();
         }
         ImGui::EndMainMenuBar();

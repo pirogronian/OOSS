@@ -63,4 +63,5 @@ public:
     double getTimeScale() const { return _ts; }
     void setTimeScale(double ts) { _ts = ts; }
     double getSimulationTime() const { return _st; }
+    void resetSimulationTime() { _st = 0; }
 };

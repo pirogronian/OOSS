@@ -8,6 +8,7 @@
 
 #include "SubModule.h"
 #include <Simulation.h>
+#include <SimTimeControl.h>
 
 class Application :  public OgreBites::ApplicationContext, public OgreBites::InputListener
 {
@@ -38,6 +39,7 @@ class Application :  public OgreBites::ApplicationContext, public OgreBites::Inp
     int _frameCounter {0};
     int _frameLimit{-1};
     VisibleUI _visibleUI;
+    SimTimeControl *_stc;
 public:
     Application();
     void setup();
