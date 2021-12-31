@@ -22,6 +22,9 @@ class Simulation
     bool _debugDraw{true};
     bool _empty{true};
     Player *_pl{nullptr};
+    double _st{0};
+    double _ts{1};
+    bool _psd{false};
 protected:
     void _initPhysics();
     void _clearPhysics();
@@ -52,4 +55,12 @@ public:
 
     bool load(const std::filesystem::path &);
     bool save(const std::filesystem::path &);
+    
+    bool isPaused() const { return _psd; }
+    void setPaused(bool p) { _psd = p; }
+    void pause() { _psd = true; }
+    void resume() { _psd = false; }
+    double getTimeScale() const { return _ts; }
+    void setTimeScale(double ts) { _ts = ts; }
+    double getSimulationTime() const { return _st; }
 };

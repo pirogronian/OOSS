@@ -86,8 +86,11 @@ Simulation::Simulation(Ogre::SceneManager *sceneMgr)
 
 void Simulation::update(double delta)
 {
+    if (_psd)  return;
+    double rd = delta * _ts;
+    _st += rd;
 //     dump(_world);
-    _world->stepSimulation(delta);
+    _world->stepSimulation(rd);
 
     if(_debugDraw)
        	_debugDrawer->update();
