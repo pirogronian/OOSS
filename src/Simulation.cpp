@@ -106,11 +106,11 @@ void Simulation::populate()
     if (!_pl->getCameraMan())  _pl->createCameraMan();
 
     auto *ogreEnt = _sceneMgr->createEntity("ogrehead.mesh");
-    auto *ogrenode = _sceneMgr->getRootSceneNode()->createChildSceneNode();
+    auto *ogrenode = _sceneMgr->getRootSceneNode()->createChildSceneNode("OgreHead");
     ogrenode->attachObject(ogreEnt);
 
     auto *fishEnt = _sceneMgr->createEntity("fish.mesh");
-    auto *fishNode = _sceneMgr->getRootSceneNode()->createChildSceneNode();
+    auto *fishNode = _sceneMgr->getRootSceneNode()->createChildSceneNode("Fish");
     fishNode->attachObject(fishEnt);
     fishNode->setPosition(0, 50, 0);
 

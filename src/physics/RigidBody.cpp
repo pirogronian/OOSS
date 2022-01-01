@@ -54,6 +54,7 @@ void RigidBody::setSceneNode(Ogre::SceneNode *n)
 {
     clearSceneNode();
     _sceneNode = n;
+    _nodeName = _sceneNode->getName();
     _rbmState = new BtOgre::RigidBodyState(_sceneNode);
     if (_bbody)  _bbody->setMotionState(_rbmState);
 }
