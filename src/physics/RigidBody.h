@@ -1,6 +1,8 @@
 
 #pragma once
 
+#include <cereal/cereal.hpp>
+
 #include "physics.h"
 
 #include "physics/BtOgre.h"
@@ -15,6 +17,7 @@ class RigidBody
     friend GravityCenter;
 protected:
     Ogre::SceneNode *_sceneNode{nullptr};
+    Ogre::String _nodeName;
     BtOgre::RigidBodyState *_rbmState{nullptr};
     btRigidBody *_bbody{nullptr};
     DynamicsWorld *_world{nullptr};
@@ -22,7 +25,10 @@ protected:
 
     mutable GravityCenter *_gc{nullptr};
     void setWorld(DynamicsWorld *w) { _world = w; }
-    void setWorldIndex(std::size_t i) { _worldIndex = i; }
+    void setWorldIndex(std::size_t i) {
+        _worldIndex = i;
+        if (_bbody) _bbody->setUserIndex(_worldIndex);
+    }
     void setGravityCenter(GravityCenter *gc) { _gc = gc; }
 public:
     std::size_t getWorldIndex() const { return _worldIndex; }
@@ -52,7 +58,7 @@ public:
         setSceneNode(node);
         setBtRigidBody(new btRigidBody(mass, nullptr, shape));
     }
-    
+
     void applyForce(const btVector3 &f, const btVector3& offset = btVector3(0, 0, 0)) {
         if (!_bbody)  return;
         _bbody->applyForce(f, offset);
@@ -84,6 +90,12 @@ public:
     btCollisionWorld::ClosestRayResultCallback rayTestClosest(const btVector3& stop) const
     {
         return rayTestClosest(btVector3(0, 0, 0), stop);
+    }
+
+    template<class Ar>
+    void serialize(Ar &a) {
+        a(cereal::make_nvp("NodeName", _nodeName),
+          cereal::make_nvp("btRigidBodyIndex", _worldIndex));
     }
 };
 

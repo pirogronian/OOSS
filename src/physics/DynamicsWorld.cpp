@@ -21,7 +21,6 @@ bool DynamicsWorld::addRigidBody(RigidBody *b)
     auto i = _bodies.add(b);
     b->setWorldIndex(i);
     b->_world = this;
-    if (b->_bbody) b->_bbody->setUserIndex(i);
     return true;
 }
 

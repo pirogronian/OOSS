@@ -30,6 +30,7 @@ void RigidBody::setBtRigidBody(btRigidBody *body)
     clearBtRigidBody();
     _bbody = body;
     _bbody->setUserPointer(this);
+    _bbody->setUserIndex(_worldIndex);
     _bbody->setActivationState(DISABLE_DEACTIVATION);
     _bbody->setMotionState(_rbmState);
     syncInertia();

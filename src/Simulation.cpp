@@ -263,6 +263,13 @@ bool Simulation::save(const filesystem::path &name) {
     oa(cereal::make_nvp("Player", *_pl));
     ColourValue al = _sceneMgr->getAmbientLight();
     oa(cereal::make_nvp("AmbientLight", al));
+    oa(cereal::make_nvp("RigidBodiesNumber", _world->rigidBodiesNumber()));
+    auto maxi = _world->getMaxRigidBodyIndex();
+    for (size_t i = 0; i <= maxi; i++) {
+        auto *rb = _world->getRigidBody(i);
+        if (!rb)  continue;
+        oa(cereal::make_nvp("RigidBody", *rb));
+    }
 
     return true;
 }
