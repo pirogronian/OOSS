@@ -100,3 +100,5 @@ link_directories    ( ${BULLET_LIBRARY_DIRS} )
 
 target_link_libraries(OOSS ${BULLET_LIBRARIES})
 target_link_libraries(OOSS BulletWorldImporter)
+
+add_subdirectory(tests)

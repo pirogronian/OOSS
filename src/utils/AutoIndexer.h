@@ -37,6 +37,12 @@
                 }
             assert(("Cannot find free slot, while its number is not zero!", false));
         }
+        void updateFreeSlotsNumber() {
+            for (std::size_t i = m_firstFreeSlot; i < m_vector.size(); i++) {
+                m_freeSlots = 0;
+                if (!m_vector[i].has_value())  ++m_freeSlots;
+            }
+        }
     public:
         std::size_t firstFreeSlot() const { return m_firstFreeSlot; }
         std::size_t freeSlots() const { return m_freeSlots; }
@@ -55,10 +61,35 @@
                 if (m_vector[i].has_value() && m_vector[i].value() == v)  return i;
             return InvalidIndex;
         }
-        std::size_t add(VType v)
+        std::size_t add(VType v, std::size_t i = InvalidIndex)
         {
             if (m_unique && indexOf(v) != InvalidIndex)  return InvalidIndex;
 
+            if (i != InvalidIndex) {
+                std::size_t oldSize = m_vector.size();
+                ensureSize(m_vector, i);
+                if (m_vector[i].has_value()) {
+                    m_vector[i] = v;
+                    return i;
+                }
+                m_vector[i] = v;
+                ++m_items;
+                if (oldSize < i) // i is behind old array
+                {
+                    if (m_firstFreeSlot == InvalidIndex)
+                        m_firstFreeSlot = oldSize;
+                    m_freeSlots += m_vector.size() - oldSize - 1;
+                }
+                else { // i is inside array
+                    if (m_firstFreeSlot == i)
+                        updateFirstFreeSlot();
+                    else {
+                        --m_freeSlots;
+                    }
+                }
+
+                return i;
+            }
             if (m_firstFreeSlot != InvalidIndex)
             {
                 auto i = m_firstFreeSlot;
