@@ -11,10 +11,13 @@
 
 class GravityCenter;
 
+class Simulation;
+
 class RigidBody
 {
     friend DynamicsWorld;
     friend GravityCenter;
+    friend Simulation;
 protected:
     Ogre::SceneNode *_sceneNode{nullptr};
     Ogre::String _nodeName;

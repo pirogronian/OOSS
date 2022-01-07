@@ -2,8 +2,6 @@
 #include <iostream>
 #include <fstream>
 
-#include <BulletWorldImporter/btBulletWorldImporter.h>
-
 #include <utils/DumpHelper.h>
 
 #include "DynamicsWorld.h"
@@ -18,7 +16,7 @@ bool DynamicsWorld::addRigidBody(RigidBody *b)
     if (_bodies.contains(b->getWorldIndex()))  return false;
     b->setWorld(this);
     if (b->getBtRigidBody())  _world.addRigidBody(b->getBtRigidBody());
-    auto i = _bodies.add(b);
+    auto i = _bodies.add(b, b->getWorldIndex());
     b->setWorldIndex(i);
     b->_world = this;
     return true;
@@ -60,7 +58,8 @@ void DynamicsWorld::_update(RigidBody *rb, btScalar delta) {
             gc->actOn(rb);
         }
     }
-    rb->getBtRigidBody()->integrateVelocities(delta); // dirty hack, but nothing else works...
+    auto *btrb = rb->getBtRigidBody();
+    if (btrb)  btrb->integrateVelocities(delta); // dirty hack, but nothing else works...
 }
 
 void DynamicsWorld::_updateRigidBodies(btScalar delta) {
@@ -78,26 +77,6 @@ void DynamicsWorld::stepSimulation(btScalar d)
     _updateRigidBodies(d);
     _world.stepSimulation(d, _maxSubSteps, _minStepDelta);
 //     _world.stepSimulation(d, 0, 0);
-}
-
-void DynamicsWorld::loadPhysics(filesystem::path const &path) {
-    cout << "DynamicsWorld::loadPhysics(" << path << ")\n";
-    auto *importer = new btBulletWorldImporter(&_world);
-    if (!importer->loadFile(path.string().data()))
-        cout << "Importing failed!\n";
-}
-
-void DynamicsWorld::savePhysics(filesystem::path const &path) {
-    cout << "DynamicsWorld::savePhysics(" << path << ")\n";
-    auto *serializer = new btDefaultSerializer();
-    _world.serialize(serializer);
-    filebuf fb;
-    fb.open(path, ios::out);
-    ostream o(&fb);
-    o.write(reinterpret_cast<const char*>(serializer->getBufferPointer()), serializer->getCurrentBufferSize());
-    if (!o.good())
-        cout << "Writing failed!\n";
-    fb.close();
 }
 
 void dump(const DynamicsWorld *dw) {

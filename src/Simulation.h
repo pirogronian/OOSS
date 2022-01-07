@@ -52,10 +52,14 @@ public:
     void clearRigidBodies(bool);
     void clearGravityCenters(bool);
     void clearCameras();
+    bool loadRigidBody(btRigidBody *);
+
+    void loadPhysics(std::filesystem::path const &);
+    void savePhysics(std::filesystem::path const &);
 
     bool load(const std::filesystem::path &);
     bool save(const std::filesystem::path &);
-    
+
     bool isPaused() const { return _psd; }
     void setPaused(bool p) { _psd = p; }
     void pause() { _psd = true; }

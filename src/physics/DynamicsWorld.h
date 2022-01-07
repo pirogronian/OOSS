@@ -1,8 +1,6 @@
 
 #pragma once
 
-#include <filesystem>
-
 #include "physics.h"
 
 #include <physics/BtOgre.h>
@@ -59,9 +57,6 @@ public:
         _world.rayTest(start, stop, callback);
         return callback;
     }
-
-    void loadPhysics(std::filesystem::path const &);
-    void savePhysics(std::filesystem::path const &);
 };
 
 void dump(const DynamicsWorld *);

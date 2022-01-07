@@ -8,6 +8,7 @@
 #include "Simulation.h"
 #include "Player.h"
 
+#include <BulletWorldImporter/btBulletWorldImporter.h>
 #include <physics/RigidBody.h>
 #include <physics/GravityCenter.h>
 
@@ -207,6 +208,36 @@ void Simulation::_initPhysics() {
     _debugDrawer->attach(_sceneMgr->getRootSceneNode());
 }
 
+void Simulation::loadPhysics(filesystem::path const &path) {
+    cout << "Simulation::loadPhysics(" << path << ")\n";
+    auto *btw = &_world->getBtWorld();
+    auto *importer = new btBulletWorldImporter(btw);
+    if (!importer->loadFile(path.string().data()))
+        cout << "Importing failed!\n";
+    auto rbn = importer->getNumRigidBodies();
+    for (int i = 0; i < rbn; i++) {
+        btRigidBody *btrb = dynamic_cast<btRigidBody*>(importer->getRigidBodyByIndex(i));
+        int rbi = btrb->getUserIndex();
+        auto *rb = _world->getRigidBody(rbi);
+        if (!rb) cout << "Cannot find RigidBody at index " << rbi << endl;
+        else rb->setBtRigidBody(btrb);
+    }
+}
+
+void Simulation::savePhysics(filesystem::path const &path) {
+    cout << "Simulation::savePhysics(" << path << ")\n";
+    auto *serializer = new btDefaultSerializer();
+    auto btw = _world->getBtWorld();
+    btw.serialize(serializer);
+    filebuf fb;
+    fb.open(path, ios::out);
+    ostream o(&fb);
+    o.write(reinterpret_cast<const char*>(serializer->getBufferPointer()), serializer->getCurrentBufferSize());
+    if (!o.good())
+        cout << "Writing failed!\n";
+    fb.close();
+}
+
 bool Simulation::load(const filesystem::path &name) {
     cout << "Simulation::load(" << name << ")\n";
     if (!filesystem::is_directory(name)) {
@@ -222,17 +253,29 @@ bool Simulation::load(const filesystem::path &name) {
     _empty = false;
 
     auto bulletFile = name / "physics.bullet";
-    _world->loadPhysics(bulletFile);
+    loadPhysics(bulletFile);
 
     ifstream is(name / "simulation.xml");
     {
         try {
             cereal::XMLInputArchive ia(is);
 //             ia(*_sceneMgr->getRootSceneNode());
-            ia(*_pl);
+            ia(cereal::make_nvp("Player", *_pl));
             ColourValue al;
-            ia(al);
+            ia(cereal::make_nvp("AmbientLight", al));
             _sceneMgr->setAmbientLight(al);
+            
+            size_t rbn;
+            ia(cereal::make_nvp("RigidBodiesNumber", rbn));
+            while(rbn) {
+                auto rb = new RigidBody();
+                ia(*rb);
+                auto *sn = _sceneMgr->getSceneNode(rb->_nodeName);
+                if (sn)  rb->setSceneNode(sn);
+                _world->addRigidBody(rb);
+                --rbn;
+            }
+            
         } catch(cereal::Exception e) {
             cerr << e.what() << endl;
             return false;
@@ -255,7 +298,7 @@ bool Simulation::save(const filesystem::path &name) {
     _sceneMgr->getRootSceneNode()->saveChildren(name / "scene.scene");
 
     auto bulletFile = name / "physics.bullet";
-    _world->savePhysics(bulletFile);
+    savePhysics(bulletFile);
 
     ofstream os(name / "simulation.xml");
     cereal::XMLOutputArchive oa(os);
