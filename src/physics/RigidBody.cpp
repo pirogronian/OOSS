@@ -33,6 +33,7 @@ void RigidBody::setBtRigidBody(btRigidBody *body)
     _bbody->setUserIndex(_worldIndex);
     _bbody->setActivationState(DISABLE_DEACTIVATION);
     _bbody->setMotionState(_rbmState);
+    _btrbIndex = _bbody->getWorldArrayIndex();
     syncInertia();
     syncTransform();
     if (_world)

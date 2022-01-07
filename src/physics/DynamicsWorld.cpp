@@ -15,7 +15,10 @@ bool DynamicsWorld::addRigidBody(RigidBody *b)
 {
     if (_bodies.contains(b->getWorldIndex()))  return false;
     b->setWorld(this);
-    if (b->getBtRigidBody())  _world.addRigidBody(b->getBtRigidBody());
+    if (b->getBtRigidBody()) {
+        _world.addRigidBody(b->getBtRigidBody());
+        b->_btrbIndex = b->_bbody->getWorldArrayIndex();
+    }
     auto i = _bodies.add(b, b->getWorldIndex());
     b->setWorldIndex(i);
     b->_world = this;

@@ -23,6 +23,7 @@ protected:
     Ogre::String _nodeName;
     BtOgre::RigidBodyState *_rbmState{nullptr};
     btRigidBody *_bbody{nullptr};
+    int _btrbIndex{-1};
     DynamicsWorld *_world{nullptr};
     std::size_t _worldIndex{std::numeric_limits<std::size_t>::max()};
 
@@ -98,7 +99,8 @@ public:
     template<class Ar>
     void serialize(Ar &a) {
         a(cereal::make_nvp("NodeName", _nodeName),
-          cereal::make_nvp("btRigidBodyIndex", _worldIndex));
+          cereal::make_nvp("btRigidBodyIndex", _worldIndex),
+          cereal::make_nvp("btRigidBodyWorldIndex", _btrbIndex));
     }
 };
 

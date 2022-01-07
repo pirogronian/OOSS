@@ -214,20 +214,30 @@ void Simulation::loadPhysics(filesystem::path const &path) {
     auto *importer = new btBulletWorldImporter(btw);
     if (!importer->loadFile(path.string().data()))
         cout << "Importing failed!\n";
-    auto rbn = importer->getNumRigidBodies();
+    auto rbn = importer->getNumRigidBodies();/*
     for (int i = 0; i < rbn; i++) {
         btRigidBody *btrb = dynamic_cast<btRigidBody*>(importer->getRigidBodyByIndex(i));
         int rbi = btrb->getUserIndex();
         auto *rb = _world->getRigidBody(rbi);
         if (!rb) cout << "Cannot find RigidBody at index " << rbi << endl;
         else rb->setBtRigidBody(btrb);
+    }*/
+    size_t maxi = _world->getMaxRigidBodyIndex();
+    for (size_t i = 0; i < maxi; i++) {
+        auto rb = _world->getRigidBody(i);
+        if (!rb)  continue;
+        int rbi = rb->_btrbIndex;
+        if (rbi >= rbn) { cout << "btCollisionObject::m_worldIndex out of border! " << rbi << endl; continue; }
+        btRigidBody *btrb = dynamic_cast<btRigidBody*>(importer->getRigidBodyByIndex(rbi));
+        if (!btrb) { cout << "btCollisionObject not found! " << rbi << endl; continue; }
+        rb->setBtRigidBody(btrb);
     }
 }
 
 void Simulation::savePhysics(filesystem::path const &path) {
     cout << "Simulation::savePhysics(" << path << ")\n";
     auto *serializer = new btDefaultSerializer();
-    auto btw = _world->getBtWorld();
+    auto &btw = _world->getBtWorld();
     btw.serialize(serializer);
     filebuf fb;
     fb.open(path, ios::out);
