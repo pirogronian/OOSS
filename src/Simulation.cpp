@@ -232,6 +232,7 @@ void Simulation::loadPhysics(filesystem::path const &path) {
         if (!btrb) { cout << "btCollisionObject not found! " << rbi << endl; continue; }
         rb->setBtRigidBody(btrb);
     }
+    btw->synchronizeMotionStates();
 }
 
 void Simulation::savePhysics(filesystem::path const &path) {

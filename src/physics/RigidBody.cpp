@@ -66,6 +66,7 @@ void RigidBody::clearSceneNode()
     {
         _bbody->setMotionState(nullptr);
         delete _rbmState;
+        _rbmState = nullptr;
     }
     _sceneNode = nullptr;
 }
